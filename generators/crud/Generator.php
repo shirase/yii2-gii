@@ -31,18 +31,21 @@ use yii\web\Controller;
  */
 class Generator extends \yii\gii\Generator
 {
-    public $modelClass;
+    public $modelClass = 'common\models\\';
     public $controllerClass;
     public $viewPath;
-    public $baseControllerClass = 'yii\web\Controller';
+    public $baseControllerClass = 'common\components\web\Controller';
     public $indexWidgetType = 'grid';
     public $searchModelClass = '';
+
+    public $enableI18N = true;
+    public $messageCategory = 'app';
 
     /**
      * @var boolean whether to wrap the `GridView` or `ListView` widget with the `yii\widgets\Pjax` widget
      * @since 2.0.5
      */
-    public $enablePjax = false;
+    public $enablePjax = true;
 
     /**
      * @inheritdoc
@@ -68,7 +71,7 @@ class Generator extends \yii\gii\Generator
     {
         return array_merge(parent::rules(), [
             [['controllerClass', 'modelClass', 'searchModelClass', 'baseControllerClass'], 'filter', 'filter' => 'trim'],
-            [['modelClass', 'controllerClass', 'baseControllerClass', 'indexWidgetType'], 'required'],
+            [['modelClass', 'controllerClass', 'viewPath', 'baseControllerClass', 'indexWidgetType'], 'required'],
             [['searchModelClass'], 'compare', 'compareAttribute' => 'modelClass', 'operator' => '!==', 'message' => 'Search Model Class must not be equal to Model Class.'],
             [['modelClass', 'controllerClass', 'baseControllerClass', 'searchModelClass'], 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'],
             [['modelClass'], 'validateClass', 'params' => ['extends' => BaseActiveRecord::className()]],
@@ -113,8 +116,7 @@ class Generator extends \yii\gii\Generator
                 and class name should be in CamelCase with an uppercase first letter. Make sure the class
                 is using the same namespace as specified by your application\'s controllerNamespace property.',
             'viewPath' => 'Specify the directory for storing the view scripts for the controller. You may use path alias here, e.g.,
-                <code>/var/www/basic/controllers/views/post</code>, <code>@app/views/post</code>. If not set, it will default
-                to <code>@app/views/ControllerID</code>',
+                <code>/var/www/basic/controllers/views/post</code>, <code>@app/views/post</code>.',
             'baseControllerClass' => 'This is the class that the new CRUD controller class will extend from.
                 You should provide a fully qualified class name, e.g., <code>yii\web\Controller</code>.',
             'indexWidgetType' => 'This is the widget type to be used in the index page to display list of the models.
@@ -202,11 +204,7 @@ class Generator extends \yii\gii\Generator
      */
     public function getViewPath()
     {
-        if (empty($this->viewPath)) {
-            return Yii::getAlias('@app/views/' . $this->getControllerID());
-        } else {
-            return Yii::getAlias($this->viewPath);
-        }
+        return Yii::getAlias($this->viewPath);
     }
 
     public function getNameAttribute()
@@ -243,6 +241,12 @@ class Generator extends \yii\gii\Generator
             return "\$form->field(\$model, '$attribute')->checkbox()";
         } elseif ($column->type === 'text') {
             return "\$form->field(\$model, '$attribute')->textarea(['rows' => 6])";
+        } elseif($column->type === 'date'){
+            return "\$form->field(\$model, '$attribute')->widget(DateControl::classname(), ['type'=>DateControl::FORMAT_DATE])";
+        } elseif($column->type === 'time'){
+            return "\$form->field(\$model, '$attribute')->widget(DateControl::classname(), ['type'=>DateControl::FORMAT_DATE])";
+        } elseif($column->type === 'datetime' || $column->type === 'timestamp'){
+            return "\$form->field(\$model, '$attribute')->widget(DateControl::classname(), ['type'=>DateControl::FORMAT_DATETIME])";
         } else {
             if (preg_match('/^(password|pass|passwd|passcode)$/i', $column->name)) {
                 $input = 'passwordInput';

@@ -249,6 +249,42 @@ yii.gii = (function ($) {
                 $('form .field-generator-querybaseclass').toggle($(this).is(':checked'));
             }).change();
 
+            // crud generator: translate model class to search class
+            $('#crud-generator #generator-modelclass').on('blur', function () {
+                var modelClass = $(this).val();
+                if (modelClass !== '') {
+                    var searchModelClass = $('#generator-searchmodelclass').val();
+                    if (searchModelClass === '') {
+                        searchModelClass = modelClass + 'Search';
+                        $('#generator-searchmodelclass').val(searchModelClass);
+                    }
+                }
+            });
+
+            // crud generator: translate model class to controller class
+            $('#crud-generator #generator-modelclass').on('blur', function () {
+                var modelClass = $(this).val();
+                if (modelClass !== '') {
+                    var controllerClass = $('#generator-controllerclass').val();
+                    if (controllerClass === '') {
+                        controllerClass = 'backend\\controllers\\' + modelClass.split('\\').pop() + 'Controller';
+                        $('#generator-controllerclass').val(controllerClass).trigger('blur');
+                    }
+                }
+            });
+
+            // crud generator: translate controller class to view path
+            $('#crud-generator #generator-controllerclass').on('blur', function () {
+                var controllerClass = $(this).val();
+                if (controllerClass !== '') {
+                    var viewPath = $('#generator-viewpath').val();
+                    if (viewPath === '') {
+                        viewPath = '@' + controllerClass.replace('\\controllers\\', '\\views\\').replace('Controller', '').replace(/\\/g, '/').toLowerCase();
+                        $('#generator-viewpath').val(viewPath);
+                    }
+                }
+            });
+
             // hide message category when I18N is disabled
             $('form #generator-enablei18n').change(function () {
                 $('form .field-generator-messagecategory').toggle($(this).is(':checked'));

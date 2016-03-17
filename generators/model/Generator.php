@@ -30,19 +30,21 @@ class Generator extends \yii\gii\Generator
     const RELATIONS_ALL_INVERSE = 'all-inverse';
 
     public $db = 'db';
-    public $ns = 'app\models';
+    public $ns = 'common\models';
     public $tableName;
     public $modelClass;
-    public $baseClass = 'yii\db\ActiveRecord';
+    public $baseClass = 'common\components\db\ActiveRecord';
     public $generateRelations = self::RELATIONS_ALL;
     public $generateLabelsFromComments = false;
     public $useTablePrefix = false;
     public $useSchemaName = true;
-    public $generateQuery = false;
-    public $queryNs = 'app\models';
+    public $generateQuery = true;
+    public $queryNs = 'common\models';
     public $queryClass;
-    public $queryBaseClass = 'yii\db\ActiveQuery';
+    public $queryBaseClass = 'common\components\db\ActiveQuery';
 
+    public $enableI18N = true;
+    public $messageCategory = 'app';
 
     /**
      * @inheritdoc

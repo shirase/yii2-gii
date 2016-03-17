@@ -256,6 +256,9 @@ yii.gii = (function ($) {
                     var searchModelClass = $('#generator-searchmodelclass').val();
                     if (searchModelClass === '') {
                         searchModelClass = modelClass + 'Search';
+                        var m = searchModelClass.split('\\');
+                        searchModelClass = m.pop();
+                        searchModelClass = m.join('\\') + '\\search\\' + searchModelClass;
                         $('#generator-searchmodelclass').val(searchModelClass);
                     }
                 }

@@ -244,7 +244,7 @@ class Generator extends \yii\gii\Generator
         } elseif($column->type === 'date'){
             return "\$form->field(\$model, '$attribute')->widget(DateControl::classname(), ['type'=>DateControl::FORMAT_DATE])";
         } elseif($column->type === 'time'){
-            return "\$form->field(\$model, '$attribute')->widget(DateControl::classname(), ['type'=>DateControl::FORMAT_DATE])";
+            return "\$form->field(\$model, '$attribute')->widget(DateControl::classname(), ['type'=>DateControl::FORMAT_TIME])";
         } elseif($column->type === 'datetime' || $column->type === 'timestamp'){
             return "\$form->field(\$model, '$attribute')->widget(DateControl::classname(), ['type'=>DateControl::FORMAT_DATETIME])";
         } else {
@@ -298,7 +298,11 @@ class Generator extends \yii\gii\Generator
             return 'boolean';
         } elseif ($column->type === 'text') {
             return 'ntext';
-        } elseif (stripos($column->name, 'time') !== false && $column->phpType === 'integer') {
+        } elseif($column->type === 'date'){
+            return 'date';
+        } elseif($column->type === 'time'){
+            return 'time';
+        } elseif($column->type === 'datetime' || $column->type === 'timestamp'){
             return 'datetime';
         } elseif (stripos($column->name, 'email') !== false) {
             return 'email';

@@ -39,7 +39,7 @@ class Generator extends \yii\gii\Generator
     public $useTablePrefix = false;
     public $useSchemaName = true;
     public $generateQuery = true;
-    public $queryNs = 'common\models';
+    public $queryNs = 'common\models\query';
     public $queryClass;
     public $queryBaseClass = 'common\components\db\ActiveQuery';
 

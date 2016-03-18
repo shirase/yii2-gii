@@ -11,6 +11,7 @@ echo "<?php\n";
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use kartik\daterange\DateRangePicker;
 
 /* @var $this yii\web\View */
 /* @var $model <?= ltrim($generator->searchModelClass, '\\') ?> */

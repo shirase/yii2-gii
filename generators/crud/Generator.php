@@ -298,7 +298,7 @@ class Generator extends \yii\gii\Generator
      */
     public function generateColumnFormat($column)
     {
-        if($column->name=='lft' || $column->name=='rgt' || $column->name=='depth') {
+        if($column->name=='lft' || $column->name=='rgt' || $column->name=='depth' || $column->name=='pos') {
             return '';
         } elseif ($column->phpType === 'boolean') {
             return 'boolean';
@@ -423,7 +423,7 @@ class Generator extends \yii\gii\Generator
         $likeConditions = [];
         $hashConditions = [];
         foreach ($columns as $column => $type) {
-            if($column==='lft' || $column==='rgt' || $column==='depth') {
+            if($column==='lft' || $column==='rgt' || $column==='depth' || $column==='pos') {
                 continue;
             }
 

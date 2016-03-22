@@ -249,7 +249,7 @@ class Generator extends \yii\gii\Generator
     {
         $labels = [];
         foreach ($table->columns as $column) {
-            if($column->name==='lft' || $column->name==='rgt' || $column->name==='depth') {
+            if($column->name==='lft' || $column->name==='rgt' || $column->name==='depth' || $column->name==='pos') {
                 continue;
             }
             if ($this->generateLabelsFromComments && !empty($column->comment)) {
@@ -281,7 +281,7 @@ class Generator extends \yii\gii\Generator
             if ($column->autoIncrement) {
                 continue;
             }
-            if($column->name==='lft' || $column->name==='rgt' || $column->name==='depth') {
+            if($column->name==='lft' || $column->name==='rgt' || $column->name==='depth' || $column->name==='pos') {
                 continue;
             }
             if (!$column->allowNull && $column->defaultValue === null) {

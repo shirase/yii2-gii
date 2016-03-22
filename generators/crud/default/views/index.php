@@ -53,11 +53,12 @@ if (($tableSchema = $generator->getTableSchema()) === false) {
     }
 } else {
     foreach ($tableSchema->columns as $column) {
-        $format = $generator->generateColumnFormat($column);
-        if (++$count < 6) {
-            echo "            '" . $column->name . ($format === 'text' ? "" : ":" . $format) . "',\n";
-        } else {
-            echo "            // '" . $column->name . ($format === 'text' ? "" : ":" . $format) . "',\n";
+        if($format = $generator->generateColumnFormat($column)) {
+            if (++$count < 6) {
+                echo "            '" . $column->name . ($format === 'text' ? "" : ":" . $format) . "',\n";
+            } else {
+                echo "            // '" . $column->name . ($format === 'text' ? "" : ":" . $format) . "',\n";
+            }
         }
     }
 }

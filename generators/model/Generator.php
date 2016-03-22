@@ -249,6 +249,9 @@ class Generator extends \yii\gii\Generator
     {
         $labels = [];
         foreach ($table->columns as $column) {
+            if($column->name==='lft' || $column->name==='rgt' || $column->name==='depth') {
+                continue;
+            }
             if ($this->generateLabelsFromComments && !empty($column->comment)) {
                 $labels[$column->name] = $column->comment;
             } elseif (!strcasecmp($column->name, 'id')) {
@@ -276,6 +279,9 @@ class Generator extends \yii\gii\Generator
         $lengths = [];
         foreach ($table->columns as $column) {
             if ($column->autoIncrement) {
+                continue;
+            }
+            if($column->name==='lft' || $column->name==='rgt' || $column->name==='depth') {
                 continue;
             }
             if (!$column->allowNull && $column->defaultValue === null) {

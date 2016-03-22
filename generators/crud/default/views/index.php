@@ -12,6 +12,7 @@ $nameAttribute = $generator->getNameAttribute();
 echo "<?php\n";
 ?>
 
+use shirase\grid\SortableSerialColumn;
 use yii\helpers\Html;
 use <?= $generator->indexWidgetType === 'grid' ? "yii\\grid\\GridView" : "yii\\widgets\\ListView" ?>;
 <?= $generator->enablePjax ? 'use yii\widgets\Pjax;' : '' ?>
@@ -38,7 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= "<?= " ?>GridView::widget([
         'dataProvider' => $dataProvider,
         <?= !empty($generator->searchModelClass) ? "//'filterModel' => \$searchModel,\n        'columns' => [\n" : "'columns' => [\n"; ?>
-            ['class' => 'yii\grid\SerialColumn'],
+            ['class' => SortableSerialColumn::className()],
 
 <?php
 $count = 0;

@@ -13,6 +13,8 @@
 /* @var $rules string[] list of validation rules */
 /* @var $relations array list of relations (name => relation declaration) */
 
+$sortable = [];
+
 echo "<?php\n";
 ?>
 
@@ -24,7 +26,7 @@ use Yii;
  * This is the model class for table "<?= $generator->generateTableName($tableName) ?>".
  *
 <?php foreach ($tableSchema->columns as $column): ?>
- * @property <?= "{$column->phpType} \${$column->name}\n" ?>
+ * @property <?= "{$column->phpType} \${$column->name}\n" ?><?php if($column->name==='pos') $sortable['pos']=true; ?><?php if($column->name==='pid') $sortable['pid']=true; ?>
 <?php endforeach; ?>
 <?php if (!empty($relations)): ?>
  *
@@ -50,6 +52,21 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
     public static function getDb()
     {
         return Yii::$app->get('<?= $generator->db ?>');
+    }
+<?php endif; ?>
+
+<?php if ($sortable): ?>
+    /**
+    * @inheritdoc
+    */
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => \shirase\sortable\TreeBehavior::className(),
+<?php if (!$sortable['pid']) echo str_repeat(" ", 16)."'pid'=>false,\n"; ?><?php if (!$sortable['pos']) echo str_repeat(" ", 16)."'pos'=>false,\n"; ?>
+            ]
+        ];
     }
 <?php endif; ?>
 

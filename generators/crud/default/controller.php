@@ -39,6 +39,7 @@ use yii\data\ActiveDataProvider;
 use <?= ltrim($generator->baseControllerClass, '\\') ?>;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\Json;
 
 /**
  * <?= $controllerClass ?> implements the CRUD actions for <?= $modelClass ?> model.
@@ -69,6 +70,27 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 <?php if (!empty($generator->searchModelClass)): ?>
         $searchModel = new <?= isset($searchModelAlias) ? $searchModelAlias : $searchModelClass ?>();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        if (Yii::$app->request->post('hasEditable')) {
+            $model = $this->findModel(Yii::$app->request->post('editableKey'));
+
+            $out = Json::encode(['output'=>'', 'message'=>'']);
+
+            $posted = current($_POST['Book']);
+            $post = ['Book' => $posted];
+
+            if ($model->load($post)) {
+                $model->save();
+
+                $output = '';
+                /*if (isset($posted['name'])) {
+                    $output = '';
+                }*/
+                $out = Json::encode(['output'=>$output, 'message'=>'']);
+            }
+            echo $out;
+            return;
+        }
 
         return $this->render('index', [
             'searchModel' => $searchModel,

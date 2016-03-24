@@ -76,7 +76,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
         ]);
 <?php else: ?>
         $dataProvider = new ActiveDataProvider([
-            'query' => <?= $modelClass ?>::find(),
+            'query' => <?= $modelClass ?>::find()->indexBy($this::primaryKey()[0]),
         ]);
 
         return $this->render('index', [

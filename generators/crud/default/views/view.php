@@ -13,6 +13,7 @@ echo "<?php\n";
 
 use yii\helpers\Html;
 use kartik\detail\DetailView;
+use kartik\datecontrol\DateControl;
 
 /* @var $this yii\web\View */
 /* @var $model <?= ltrim($generator->modelClass, '\\') ?> */
@@ -25,7 +26,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= "<?= " ?>Html::encode($this->title) ?></h1>
 
-    <p>
+    <?php /*<p>
         <?= "<?= " ?>Html::a(<?= $generator->generateString('Update') ?>, ['update', <?= $urlParams ?>], ['class' => 'btn btn-primary']) ?>
         <?= "<?= " ?>Html::a(<?= $generator->generateString('Delete') ?>, ['delete', <?= $urlParams ?>], [
             'class' => 'btn btn-danger',
@@ -34,7 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'method' => 'post',
             ],
         ]) ?>
-    </p>
+    </p> */?>
 
     <?= "<?= " ?>DetailView::widget([
         'model' => $model,
@@ -47,11 +48,50 @@ if (($tableSchema = $generator->getTableSchema()) === false) {
 } else {
     foreach ($generator->getTableSchema()->columns as $column) {
         if($format = $generator->generateColumnFormat($column)) {
-            echo "            '" . $column->name . ($format === 'text' ? "" : ":" . $format) . "',\n";
+            if($column->type === 'date' || $column->type === 'datetime' || $column->type === 'timestamp'){
+                echo "            [
+                'attribute'=>'$column->name',
+                'format'=>['date',(isset(Yii::\$app->modules['datecontrol']['displaySettings']['date'])) ? Yii::\$app->modules['datecontrol']['displaySettings']['date'] : 'd-m-Y'],
+                'type'=>DetailView::INPUT_WIDGET,
+                'widgetOptions'=> [
+                    'class'=>DateControl::classname(),
+                    'type'=>DateControl::FORMAT_DATE
+                ]
+            ],\n";
+            } elseif($column->type === 'time'){
+                echo "            [
+                'attribute'=>'$column->name',
+                'format'=>['time',(isset(Yii::\$app->modules['datecontrol']['displaySettings']['time'])) ? Yii::\$app->modules['datecontrol']['displaySettings']['time'] : 'H:i:s A'],
+                'type'=>DetailView::INPUT_WIDGET,
+                'widgetOptions'=> [
+                    'class'=>DateControl::classname(),
+                    'type'=>DateControl::FORMAT_TIME
+                ]
+            ],\n";
+            /*} elseif($column->type === 'datetime' || $column->type === 'timestamp'){
+                echo "            [
+                'attribute'=>'$column->name',
+                'format'=>['datetime',(isset(Yii::\$app->modules['datecontrol']['displaySettings']['datetime'])) ? Yii::\$app->modules['datecontrol']['displaySettings']['datetime'] : 'd-m-Y H:i:s A'],
+                'type'=>DetailView::INPUT_WIDGET,
+                'widgetOptions'=> [
+                    'class'=>DateControl::classname(),
+                    'type'=>DateControl::FORMAT_DATETIME
+                ]
+            ],\n";*/
+            } else {
+                echo "            '" . $column->name . ($format === 'text' ? "" : ":" . $format) . "',\n";
+            }
         }
     }
 }
 ?>
+        ],
+        'panel'=>[
+            'heading'=>$this->title,
+        ],
+        'deleteOptions'=>[
+            'url' => ['delete', $model->primaryKey()[0]=>$model->primaryKey],
+            'params' => ['j-delete' => true],
         ],
     ]) ?>
 

@@ -40,6 +40,7 @@ use <?= ltrim($generator->baseControllerClass, '\\') ?>;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\Json;
+use yii\helpers\Url;
 
 /**
  * <?= $controllerClass ?> implements the CRUD actions for <?= $modelClass ?> model.
@@ -114,9 +115,14 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
      */
     public function actionView(<?= $actionParams ?>)
     {
-        return $this->render('view', [
-            'model' => $this->findModel(<?= $actionParams ?>),
-        ]);
+        $model=$this->findModel(<?= $actionParams ?>);
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            Yii::$app->session->setFlash('kv-detail-success', 'Saved record successfully');
+            return $this->redirect(['view', 'id'=>$model->id]);
+        } else {
+            return $this->render('view', ['model'=>$model]);
+        }
     }
 
     /**
@@ -162,11 +168,31 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
      * <?= implode("\n     * ", $actionParamComments) . "\n" ?>
      * @return mixed
      */
-    public function actionDelete(<?= $actionParams ?>)
-    {
-        $this->findModel(<?= $actionParams ?>)->delete();
-
-        return $this->redirect(['index']);
+    public function actionDelete(<?= $actionParams ?>) {
+        $post = Yii::$app->request->post();
+        if (Yii::$app->request->isAjax && isset($post['j-delete'])) {
+            if ($this->findModel(<?= $actionParams ?>)->delete()) {
+                echo Json::encode([
+                    'success' => true,
+                    'messages' => [
+                    'kv-detail-info' => 'Successfully deleted. <a href="' .
+                                                Url::to(['index']) . '" class="btn btn-sm btn-info">' .
+                        '<i class="glyphicon glyphicon-hand-right"></i>  Click here</a> to proceed.'
+                    ]
+                ]);
+            } else {
+                echo Json::encode([
+                    'success' => false,
+                    'messages' => [
+                        'kv-detail-error' => 'Cannot delete'
+                    ]
+                ]);
+            }
+            return;
+        } else {
+            $this->findModel($id)->delete();
+            $this->redirect(['index']);
+        }
     }
 
     /**

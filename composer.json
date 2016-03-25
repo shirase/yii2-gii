@@ -18,6 +18,12 @@
         }
     ],
     "minimum-stability": "dev",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/shirase/yii2-sortable"
+        }
+    ],
     "require": {
         "yiisoft/yii2": ">=2.0.4",
         "yiisoft/yii2-bootstrap": "~2.0",

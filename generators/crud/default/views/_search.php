@@ -29,9 +29,9 @@ use kartik\daterange\DateRangePicker;
 $count = 0;
 foreach ($generator->getColumnNames() as $attribute) {
     if (++$count < 6) {
-        echo "    <?= " . $generator->generateActiveSearchField($attribute) . " ?>\n\n";
+        if ($s = $generator->generateActiveSearchField($attribute)) echo "    <?= " . $s . " ?>\n\n";
     } else {
-        echo "    <?php // echo " . $generator->generateActiveSearchField($attribute) . " ?>\n\n";
+        if ($s = $generator->generateActiveSearchField($attribute)) echo "    <?php //echo " . $s . " ?>\n\n";
     }
 }
 ?>

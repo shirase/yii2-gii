@@ -27,7 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= "<?= " ?>Html::encode($this->title) ?></h1>
 <?php if(!empty($generator->searchModelClass)): ?>
-<?= "    <?php " . ($generator->indexWidgetType === 'grid' ? "// " : "") ?>echo $this->render('_search', ['model' => $searchModel]); ?>
+<?= "    <?php " . ($generator->indexWidgetType === 'grid' ? "//" : "//") ?>echo $this->render('_search', ['model' => $searchModel]); ?>
 <?php endif; ?>
 
     <p>
@@ -44,26 +44,31 @@ $this->params['breadcrumbs'][] = $this->title;
 $count = 0;
 if (($tableSchema = $generator->getTableSchema()) === false) {
     foreach ($generator->getColumnNames() as $name) {
-        if (++$count < 6) {
+        if (++$count < 10) {
             echo "            '" . $name . "',\n";
         } else {
-            echo "            // '" . $name . "',\n";
+            echo "            //'" . $name . "',\n";
         }
     }
 } else {
     foreach ($tableSchema->columns as $column) {
+        if($column->isPrimaryKey) continue;
         if($format = $generator->generateColumnFormat($column)) {
-            if (++$count < 6) {
-                echo "            '" . $column->name . ($format === 'text' ? "" : ":" . $format) . "',\n";
+            $prefix = '';
+            if (++$count == 10) {
+                $prefix = '//';
+            }
+            if($format == 'boolean') {
+                echo "            ".$prefix."['class'=>'kartik\grid\BooleanColumn', 'attribute'=>'$column->name'],\n";
             } else {
-                echo "            // '" . $column->name . ($format === 'text' ? "" : ":" . $format) . "',\n";
+                echo "            '" . $prefix . $column->name . ($format === 'text' ? "" : ":" . $format) . "',\n";
             }
         }
     }
 }
 ?>
 
-            ['class' => 'yii\grid\ActionColumn'],
+            ['class' => 'kartik\grid\ActionColumn'],
         ],
     ]); ?>
 <?php else: ?>

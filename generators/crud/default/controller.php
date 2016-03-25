@@ -119,7 +119,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             Yii::$app->session->setFlash('kv-detail-success', 'Saved record successfully');
-            return $this->redirect(['view', 'id'=>$model->id]);
+            return $this->redirect(['view', <?= $urlParams ?>]);
         } else {
             return $this->render('view', ['model'=>$model]);
         }
@@ -135,7 +135,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
         $model = new <?= $modelClass ?>();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', <?= $urlParams ?>]);
+            return $this->redirect(['index', 'returned'=>true]);
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -154,7 +154,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
         $model = $this->findModel(<?= $actionParams ?>);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', <?= $urlParams ?>]);
+            return $this->redirect(['index', 'returned'=>true]);
         } else {
             return $this->render('update', [
                 'model' => $model,
@@ -191,7 +191,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
             return;
         } else {
             $this->findModel($id)->delete();
-            $this->redirect(['index']);
+            $this->redirect(['index', 'returned'=>true]);
         }
     }
 

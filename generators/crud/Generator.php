@@ -237,7 +237,7 @@ class Generator extends \yii\gii\Generator
             }
         }
         $column = $tableSchema->columns[$attribute];
-        if ($column->phpType === 'boolean') {
+        if ($column->phpType === 'boolean' || $column->size == 1) {
             return "\$form->field(\$model, '$attribute')->checkbox()";
         } elseif ($column->type === 'text') {
             return "\$form->field(\$model, '$attribute')->textarea(['rows' => 6])";
@@ -246,7 +246,7 @@ class Generator extends \yii\gii\Generator
         } elseif($column->type === 'time'){
             return "\$form->field(\$model, '$attribute')->widget(DateControl::classname(), ['type'=>DateControl::FORMAT_TIME])";
         } elseif($column->type === 'datetime' || $column->type === 'timestamp'){
-            return "\$form->field(\$model, '$attribute')->widget(DateControl::classname(), ['type'=>DateControl::FORMAT_DATETIME])";
+            return "\$form->field(\$model, '$attribute')->widget(DateControl::classname(), ['type'=>DateControl::FORMAT_DATE, 'saveFormat'=>((\$m = Yii::\$app->getModule('datecontrol')) ? \$m->saveSettings['datetime'] : 'php:Y-m-d H:i:s')])";
         } else {
             if (preg_match('/^(password|pass|passwd|passcode)$/i', $column->name)) {
                 $input = 'passwordInput';
@@ -280,7 +280,9 @@ class Generator extends \yii\gii\Generator
             return "\$form->field(\$model, '$attribute')";
         }
         $column = $tableSchema->columns[$attribute];
-        if ($column->phpType === 'boolean') {
+        if($column->name=='lft' || $column->name=='rgt' || $column->name=='depth' || $column->name=='pos') {
+            return '';
+        } elseif ($column->phpType === 'boolean' || $column->size == 1) {
             return "\$form->field(\$model, '$attribute')->checkbox()";
         } elseif($column->type === 'date'){
             return "\$form->field(\$model, '$attribute')->widget(DateRangePicker::classname(), ['pluginOptions'=>['locale'=>['format'=>'YYYY-MM-DD']]])";
@@ -300,7 +302,7 @@ class Generator extends \yii\gii\Generator
     {
         if($column->name=='lft' || $column->name=='rgt' || $column->name=='depth' || $column->name=='pos') {
             return '';
-        } elseif ($column->phpType === 'boolean') {
+        } elseif ($column->phpType === 'boolean' || $column->size==1) {
             return 'boolean';
         } elseif ($column->type === 'text') {
             return 'ntext';

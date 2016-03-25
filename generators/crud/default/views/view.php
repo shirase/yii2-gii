@@ -26,16 +26,17 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= "<?= " ?>Html::encode($this->title) ?></h1>
 
-    <?php /*<p>
-        <?= "<?= " ?>Html::a(<?= $generator->generateString('Update') ?>, ['update', <?= $urlParams ?>], ['class' => 'btn btn-primary']) ?>
-        <?= "<?= " ?>Html::a(<?= $generator->generateString('Delete') ?>, ['delete', <?= $urlParams ?>], [
+    <p>
+        <?= "<?= " ?>Html::a(<?= $generator->generateString('Back') ?>, ['index', 'returned'=>true], ['class' => 'btn btn-default']) ?>
+        <!--<?= "<?= " ?>Html::a(<?= $generator->generateString('Update') ?>, ['update', <?= $urlParams ?>], ['class' => 'btn btn-primary']) ?>-->
+        <!--<?= "<?= " ?>Html::a(<?= $generator->generateString('Delete') ?>, ['delete', <?= $urlParams ?>], [
             'class' => 'btn btn-danger',
             'data' => [
                 'confirm' => <?= $generator->generateString('Are you sure you want to delete this item?') ?>,
                 'method' => 'post',
             ],
-        ]) ?>
-    </p> */?>
+        ]) ?>-->
+    </p>
 
     <?= "<?= " ?>DetailView::widget([
         'model' => $model,
@@ -47,37 +48,44 @@ if (($tableSchema = $generator->getTableSchema()) === false) {
     }
 } else {
     foreach ($generator->getTableSchema()->columns as $column) {
-        if($format = $generator->generateColumnFormat($column)) {
-            if($column->type === 'date' || $column->type === 'datetime' || $column->type === 'timestamp'){
+        if ($format = $generator->generateColumnFormat($column)) {
+            if ($column->type === 'datetime' || $column->type === 'timestamp') {
                 echo "            [
                 'attribute'=>'$column->name',
-                'format'=>['date',(isset(Yii::\$app->modules['datecontrol']['displaySettings']['date'])) ? Yii::\$app->modules['datecontrol']['displaySettings']['date'] : 'd-m-Y'],
+                'format'=>'datetime',
+                'type'=>DetailView::INPUT_WIDGET,
+                'widgetOptions'=> [
+                    'class'=>DateControl::classname(),
+                    'type'=>DateControl::FORMAT_DATE,
+                    'saveFormat'=>((\$m = Yii::\$app->getModule('datecontrol')) ? \$m->saveSettings['datetime'] : 'php:Y-m-d H:i:s'),
+                ]
+            ],\n";
+            } elseif ($column->type === 'date') {
+                echo "            [
+                'attribute'=>'$column->name',
+                'format'=>'date',
                 'type'=>DetailView::INPUT_WIDGET,
                 'widgetOptions'=> [
                     'class'=>DateControl::classname(),
                     'type'=>DateControl::FORMAT_DATE
                 ]
             ],\n";
-            } elseif($column->type === 'time'){
+            } elseif ($column->type === 'time') {
                 echo "            [
                 'attribute'=>'$column->name',
-                'format'=>['time',(isset(Yii::\$app->modules['datecontrol']['displaySettings']['time'])) ? Yii::\$app->modules['datecontrol']['displaySettings']['time'] : 'H:i:s A'],
+                'format'=>'time',
                 'type'=>DetailView::INPUT_WIDGET,
                 'widgetOptions'=> [
                     'class'=>DateControl::classname(),
                     'type'=>DateControl::FORMAT_TIME
                 ]
             ],\n";
-            /*} elseif($column->type === 'datetime' || $column->type === 'timestamp'){
+            } elseif ($column->phpType === 'boolean' || $column->size == 1) {
                 echo "            [
                 'attribute'=>'$column->name',
-                'format'=>['datetime',(isset(Yii::\$app->modules['datecontrol']['displaySettings']['datetime'])) ? Yii::\$app->modules['datecontrol']['displaySettings']['datetime'] : 'd-m-Y H:i:s A'],
-                'type'=>DetailView::INPUT_WIDGET,
-                'widgetOptions'=> [
-                    'class'=>DateControl::classname(),
-                    'type'=>DateControl::FORMAT_DATETIME
-                ]
-            ],\n";*/
+                'format'=>'boolean',
+                'type'=>DetailView::INPUT_CHECKBOX,
+            ],\n";
             } else {
                 echo "            '" . $column->name . ($format === 'text' ? "" : ":" . $format) . "',\n";
             }

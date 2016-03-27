@@ -10,7 +10,7 @@ echo "<?php\n";
 ?>
 
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+use shirase\widgets\ActiveForm;
 use kartik\daterange\DateRangePicker;
 
 /* @var $this yii\web\View */

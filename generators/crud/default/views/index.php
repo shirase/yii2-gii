@@ -33,9 +33,9 @@ $this->params['breadcrumbs'][] = $this->title;
     <p>
         <?= "<?= " ?>Html::a(<?= $generator->generateString('Create ' . Inflector::camel2words(StringHelper::basename($generator->modelClass))) ?>, ['create'], ['class' => 'btn btn-success']) ?>
     </p>
-<?= $generator->enablePjax ? '<?php Pjax::begin(); ?>' : '' ?>
 <?php if ($generator->indexWidgetType === 'grid'): ?>
     <?= "<?= " ?>GridView::widget([
+        <?= $generator->enablePjax ? '\'pjax\' => true,' : '' ?>
         'dataProvider' => $dataProvider,
         <?= !empty($generator->searchModelClass) ? "//'filterModel' => \$searchModel,\n        'columns' => [\n" : "'columns' => [\n"; ?>
             ['class' => 'shirase\sortable\grid\SerialColumn'],
@@ -72,6 +72,7 @@ if (($tableSchema = $generator->getTableSchema()) === false) {
         ],
     ]); ?>
 <?php else: ?>
+    <?= $generator->enablePjax ? '<?php Pjax::begin(); ?>' : '' ?>
     <?= "<?= " ?>ListView::widget([
         'dataProvider' => $dataProvider,
         'itemOptions' => ['class' => 'item'],
@@ -79,6 +80,6 @@ if (($tableSchema = $generator->getTableSchema()) === false) {
             return Html::a(Html::encode($model-><?= $nameAttribute ?>), ['view', <?= $urlParams ?>]);
         },
     ]) ?>
+    <?= $generator->enablePjax ? '<?php Pjax::end(); ?>' : '' ?>
 <?php endif; ?>
-<?= $generator->enablePjax ? '<?php Pjax::end(); ?>' : '' ?>
 </div>

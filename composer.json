@@ -22,6 +22,10 @@
         {
             "type": "vcs",
             "url": "https://github.com/shirase/yii2-sortable"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/shirase/yii2-widgets"
         }
     ],
     "require": {
@@ -29,7 +33,8 @@
         "yiisoft/yii2-bootstrap": "~2.0",
         "phpspec/php-diff": ">=1.0.2",
         "bower-asset/typeahead.js": "0.10.* | ~0.11.0",
-        "shirase/yii2-sortable": "*"
+        "shirase/yii2-sortable": "*",
+        "shirase/yii2-widgets":"*"
     },
     "autoload": {
         "psr-4": {

@@ -17,7 +17,7 @@ echo "<?php\n";
 ?>
 
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+use shirase\widgets\ActiveForm;
 use kartik\datecontrol\DateControl;
 
 /* @var $this yii\web\View */

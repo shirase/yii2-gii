@@ -285,9 +285,9 @@ class Generator extends \yii\gii\Generator
         } elseif ($column->phpType === 'boolean' || $column->size == 1) {
             return "\$form->field(\$model, '$attribute')->checkbox()";
         } elseif($column->type === 'date'){
-            return "\$form->field(\$model, '$attribute')->widget(DateRangePicker::classname(), ['pluginOptions'=>['locale'=>['format'=>'YYYY-MM-DD']]])";
+            return "\$form->field(\$model, '$attribute')->widget(DateRangePicker::classname(), ['pluginOptions'=>['locale'=>['format'=>((\$m=\Yii::\$app->getModule('datecontrol')) ? \kartik\datecontrol\Module::parseFormat(\$m->displaySettings['date'], 'date') : 'Y-m-d')]]])";
         } elseif($column->type === 'datetime' || $column->type === 'timestamp'){
-            return "\$form->field(\$model, '$attribute')->widget(DateRangePicker::classname(), ['pluginOptions'=>['locale'=>['format'=>'YYYY-MM-DD']]])";
+            return "\$form->field(\$model, '$attribute')->widget(DateRangePicker::classname(), ['pluginOptions'=>['locale'=>['format'=>((\$m=\Yii::\$app->getModule('datecontrol')) ? \kartik\datecontrol\Module::parseFormat(\$m->displaySettings['date'], 'date') : 'Y-m-d')]]])";
         } else {
             return "\$form->field(\$model, '$attribute')";
         }
@@ -444,7 +444,7 @@ class Generator extends \yii\gii\Generator
                 case Schema::TYPE_DATE:
                 case Schema::TYPE_DATETIME:
                 case Schema::TYPE_TIMESTAMP:
-                    $likeConditions[] = "->andFilterRange('{$column}', \$this->{$column})";
+                    $likeConditions[] = "->andFilterDateRange('{$column}', \$this->{$column})";
                     break;
                 default:
                     $likeConditions[] = "->andFilterWhere(['like', '{$column}', \$this->{$column}])";

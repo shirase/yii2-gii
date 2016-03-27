@@ -63,7 +63,7 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
     {
         return [
             [
-                'class' => \shirase\sortable\TreeBehavior::className(),
+                'class' => \shirase\tree\TreeBehavior::className(),
 <?php if (!$sortable['pid']) echo str_repeat(" ", 16)."'pid'=>false,\n"; ?><?php if (!$sortable['pos']) echo str_repeat(" ", 16)."'pos'=>false,\n"; ?>
             ]
         ];

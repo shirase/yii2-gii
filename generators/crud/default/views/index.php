@@ -38,7 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= $generator->enablePjax ? '\'pjax\' => true,' : '' ?>
         'dataProvider' => $dataProvider,
         <?= !empty($generator->searchModelClass) ? "//'filterModel' => \$searchModel,\n        'columns' => [\n" : "'columns' => [\n"; ?>
-            ['class' => 'shirase\sortable\grid\SerialColumn'],
+            ['class' => 'shirase\grid\sortable\SerialColumn'],
 
 <?php
 $count = 0;

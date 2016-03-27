@@ -285,9 +285,9 @@ class Generator extends \yii\gii\Generator
         } elseif ($column->phpType === 'boolean' || $column->size == 1) {
             return "\$form->field(\$model, '$attribute')->checkbox()";
         } elseif($column->type === 'date'){
-            return "\$form->field(\$model, '$attribute')->widget(DateRangePicker::classname(), ['pluginOptions'=>['locale'=>['format'=>((\$m=\Yii::\$app->getModule('datecontrol')) ? \kartik\datecontrol\Module::parseFormat(\$m->displaySettings['date'], 'date') : 'Y-m-d')]]])";
+            return "\$form->field(\$model, '$attribute')->widget(DateRangePicker::classname(), ['hideInput'=>true, 'convertFormat'=>true, 'pluginOptions'=>['locale'=>['format'=>((\$m=\Yii::\$app->getModule('datecontrol')) ? \kartik\datecontrol\Module::parseFormat(\$m->displaySettings['date'], 'date') : 'Y-m-d')]]])";
         } elseif($column->type === 'datetime' || $column->type === 'timestamp'){
-            return "\$form->field(\$model, '$attribute')->widget(DateRangePicker::classname(), ['pluginOptions'=>['locale'=>['format'=>((\$m=\Yii::\$app->getModule('datecontrol')) ? \kartik\datecontrol\Module::parseFormat(\$m->displaySettings['date'], 'date') : 'Y-m-d')]]])";
+            return "\$form->field(\$model, '$attribute')->widget(DateRangePicker::classname(), ['hideInput'=>true, 'convertFormat'=>true, 'pluginOptions'=>['locale'=>['format'=>((\$m=\Yii::\$app->getModule('datecontrol')) ? \kartik\datecontrol\Module::parseFormat(\$m->displaySettings['date'], 'date') : 'Y-m-d')]]])";
         } else {
             return "\$form->field(\$model, '$attribute')";
         }

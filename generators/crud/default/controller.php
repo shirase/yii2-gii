@@ -77,8 +77,8 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 
             $out = Json::encode(['output'=>'', 'message'=>'']);
 
-            $posted = current($_POST['Book']);
-            $post = ['Book' => $posted];
+            $posted = current($_POST['<?= $modelClass ?>']);
+            $post = ['<?= $modelClass ?>' => $posted];
 
             if ($model->load($post)) {
                 $model->save();

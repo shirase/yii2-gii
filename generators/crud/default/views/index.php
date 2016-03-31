@@ -31,7 +31,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php endif; ?>
 
     <p>
-        <?= "<?= " ?>Html::a(<?= $generator->generateString('Create ' . Inflector::camel2words(StringHelper::basename($generator->modelClass))) ?>, ['create']+$this->context->actionParams, ['class' => 'btn btn-success']) ?>
+        <?= "<?php " ?>if (\Yii::$app->user->can('/'.$this->context->uniqueId.'/create')) echo Html::a(<?= $generator->generateString('Create ' . Inflector::camel2words(StringHelper::basename($generator->modelClass))) ?>, ['create']+$this->context->actionParams, ['class' => 'btn btn-success']) ?>
     </p>
 <?php if ($generator->indexWidgetType === 'grid'): ?>
     <?= "<?= " ?>GridView::widget([
@@ -68,7 +68,14 @@ if (($tableSchema = $generator->getTableSchema()) === false) {
 }
 ?>
 
-            ['class' => 'kartik\grid\ActionColumn'],
+            [
+                'class' => 'kartik\grid\ActionColumn',
+                'visibleButtons'=>[
+                    'view' => \Yii::$app->user->can('/'.$this->context->uniqueId.'/view'),
+                    'update' => \Yii::$app->user->can('/'.$this->context->uniqueId.'/update'),
+                    'delete' => \Yii::$app->user->can('/'.$this->context->uniqueId.'/delete'),
+                ],
+            ],
         ],
     ]); ?>
 <?php else: ?>

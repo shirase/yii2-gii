@@ -95,7 +95,7 @@ if (($tableSchema = $generator->getTableSchema()) === false) {
 ?>
         ],
         'panel'=>[
-            'heading'=>$this->title,
+            //'heading'=>$this->title,
         ],
         'deleteOptions'=>[
             'url' => ['delete', $model->primaryKey()[0]=>$model->primaryKey],

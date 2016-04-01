@@ -282,7 +282,13 @@ yii.gii = (function ($) {
                 if (controllerClass !== '') {
                     var viewPath = $('#generator-viewpath').val();
                     if (viewPath === '') {
-                        viewPath = '@' + controllerClass.replace('\\controllers\\', '\\views\\').replace('Controller', '').replace(/\\/g, '/').toLowerCase();
+                        viewPath = '@' + controllerClass.replace('\\controllers\\', '\\views\\').replace('Controller', '').replace(/\\/g, '/');
+                        var m = viewPath.split('/');
+                        var camelName = m.pop();
+                        var viewDir = camelName.replace(/([A-Z])/g, '-$1');
+                        if(viewDir.substr(0, 1)==='-') viewDir = viewDir.substr(1);
+                        m.push(viewDir);
+                        viewPath = m.join('/').toLowerCase();
                         $('#generator-viewpath').val(viewPath);
                     }
                 }

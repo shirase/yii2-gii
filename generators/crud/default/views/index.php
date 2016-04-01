@@ -35,7 +35,8 @@ $this->params['breadcrumbs'][] = $this->title;
     </p>
 <?php if ($generator->indexWidgetType === 'grid'): ?>
     <?= "<?= " ?>GridView::widget([
-        <?= $generator->enablePjax ? '\'pjax\' => true,' : '' ?>
+        'id' => '<?= Inflector::camel2id(StringHelper::basename($generator->modelClass)) ?>-grid',
+        <?= $generator->enablePjax ? '\'pjax\' => true,'."\n" : '' ?>
         'dataProvider' => $dataProvider,
         <?= !empty($generator->searchModelClass) ? "//'filterModel' => \$searchModel,\n        'columns' => [\n" : "'columns' => [\n"; ?>
             ['class' => 'shirase\grid\sortable\SerialColumn'],

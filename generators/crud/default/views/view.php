@@ -95,7 +95,7 @@ if (($tableSchema = $generator->getTableSchema()) === false) {
 ?>
         ],
         'panel'=>[
-            //'heading'=>$this->title,
+            //'heading'=>(Yii::$app->user->can('/' . \common\components\helpers\Url::normalizeRoute('update')) ? $this->title : null),
         ],
         'deleteOptions'=>[
             'url' => ['delete', $model->primaryKey()[0]=>$model->primaryKey],

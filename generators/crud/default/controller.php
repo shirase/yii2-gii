@@ -70,7 +70,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
     {
 <?php if (!empty($generator->searchModelClass)): ?>
         if (Yii::$app->request->post('hasEditable')) {
-            if (!Yii::$app->user->can(\common\components\helpers\Url::normalizeRoute('update'))) {
+            if (!Yii::$app->user->can('/' . \common\components\helpers\Url::normalizeRoute('update'))) {
                 throw new HttpException(403);
             }
 
@@ -116,6 +116,9 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
         $model=$this->findModel(<?= $actionParams ?>);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            if (!Yii::$app->user->can('/' . \common\components\helpers\Url::normalizeRoute('update'))) {
+                throw new HttpException(403);
+            }
             Yii::$app->session->setFlash('kv-detail-success', 'Saved record successfully');
             return $this->redirect(['view', <?= $urlParams ?>]);
         } else {

@@ -72,9 +72,9 @@ if (($tableSchema = $generator->getTableSchema()) === false) {
             [
                 'class' => 'kartik\grid\ActionColumn',
                 'visibleButtons'=>[
-                    'view' => \Yii::$app->user->can('/'.$this->context->uniqueId.'/view'),
-                    'update' => \Yii::$app->user->can('/'.$this->context->uniqueId.'/update'),
-                    'delete' => \Yii::$app->user->can('/'.$this->context->uniqueId.'/delete'),
+                    'view' => \Yii::$app->user->can('/' . \common\components\helpers\Url::normalizeRoute('view')),
+                    'update' => \Yii::$app->user->can('/' . \common\components\helpers\Url::normalizeRoute('update')),
+                    'delete' => \Yii::$app->user->can('/' . \common\components\helpers\Url::normalizeRoute('delete')),
                 ],
             ],
         ],

@@ -688,9 +688,7 @@ class Generator extends \yii\gii\Generator
     }
 
     /**
-     * Generate a relation name for the specified table and a base name.
-     * @param array $relations the relations being generated currently.
-     * @param \yii\db\TableSchema $table the table schema
+     * Generate a relation name for the specified key
      * @param string $key a base name that the relation name may be generated from
      * @param boolean $multiple whether this is a has-many relation
      * @return string the relation name
@@ -703,6 +701,6 @@ class Generator extends \yii\gii\Generator
         if ($multiple) {
             $key = Inflector::pluralize($key);
         }
-        return strtolower(Inflector::id2camel($key, '_'));
+        return $key;
     }
 }

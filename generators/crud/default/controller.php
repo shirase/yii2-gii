@@ -69,14 +69,8 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
     public function actionIndex()
     {
 <?php if (!empty($generator->searchModelClass)): ?>
-        $searchModel = new <?= isset($searchModelAlias) ? $searchModelAlias : $searchModelClass ?>();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
         if (Yii::$app->request->post('hasEditable')) {
-            $m = explode('/', $this->route);
-            array_pop($m);
-            $m[] = 'update';
-            if (!Yii::$app->user->can(implode('/', $m))) {
+            if (!Yii::$app->user->can(\common\components\helpers\Url::normalizeRoute('update'))) {
                 throw new HttpException(403);
             }
 
@@ -89,16 +83,13 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 
             if ($model->load($post)) {
                 $model->save();
-
-                $output = '';
-                /*if (isset($posted['name'])) {
-                    $output = '';
-                }*/
-                $out = Json::encode(['output'=>$output, 'message'=>'']);
             }
             echo $out;
             return;
         }
+
+        $searchModel = new <?= isset($searchModelAlias) ? $searchModelAlias : $searchModelClass ?>();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,

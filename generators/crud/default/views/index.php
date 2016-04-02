@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Inflector;
+use yii\helpers\Json;
 use yii\helpers\StringHelper;
 
 /* @var $this yii\web\View */
@@ -59,7 +60,11 @@ if (($tableSchema = $generator->getTableSchema()) === false) {
             if (++$count == 10) {
                 $prefix = '//';
             }
-            if($format == 'boolean') {
+            if(is_array($format)) {
+                foreach($format as $line) {
+                    echo "            ".$prefix.$line.",\n";
+                }
+            } elseif($format == 'boolean') {
                 echo "            ".$prefix."['class'=>'kartik\grid\BooleanColumn', 'attribute'=>'$column->name'],\n";
             } else {
                 echo "            ".$prefix."'" . $column->name . ($format === 'text' ? "" : ":" . $format) . "',\n";

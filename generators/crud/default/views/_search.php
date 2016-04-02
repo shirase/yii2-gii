@@ -13,6 +13,7 @@ use yii\helpers\Html;
 use shirase\form\ActiveForm;
 use kartik\daterange\DateRangePicker;
 use yii\helpers\Url;
+use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
 /* @var $model <?= ltrim($generator->searchModelClass, '\\') ?> */

@@ -228,6 +228,8 @@ class Generator extends \yii\gii\Generator
      */
     public function generateActiveField($attribute)
     {
+        $relations = $this->getRelations();
+
         $tableSchema = $this->getTableSchema();
         if ($tableSchema === false || !isset($tableSchema->columns[$attribute])) {
             if (preg_match('/^(password|pass|passwd|passcode)$/i', $attribute)) {
@@ -237,7 +239,9 @@ class Generator extends \yii\gii\Generator
             }
         }
         $column = $tableSchema->columns[$attribute];
-        if ($column->phpType === 'boolean' || $column->size == 1) {
+        if (isset($relations[$column->name])) {
+            return "\$form->field(\$model, '$attribute')->widget(kartik\\select2\\Select2::className(), ['data'=>[''=>'-']+ArrayHelper::map({$this->modelNameSpace}{$relations[$column->name]}::find()->all(), 'id', 'name')])";
+        } elseif ($column->phpType === 'boolean' || $column->size == 1) {
             return "\$form->field(\$model, '$attribute')->checkbox()";
         } elseif ($column->type === 'text') {
             return "\$form->field(\$model, '$attribute')->textarea(['rows' => 6])";
@@ -275,12 +279,16 @@ class Generator extends \yii\gii\Generator
      */
     public function generateActiveSearchField($attribute)
     {
+        $relations = $this->getRelations();
+
         $tableSchema = $this->getTableSchema();
         if ($tableSchema === false) {
             return "\$form->field(\$model, '$attribute')";
         }
         $column = $tableSchema->columns[$attribute];
-        if($column->name=='lft' || $column->name=='rgt' || $column->name=='depth' || $column->name=='pos') {
+        if (isset($relations[$column->name])) {
+            return "\$form->field(\$model, '$attribute')->widget(kartik\\select2\\Select2::className(), ['data'=>[''=>'-']+ArrayHelper::map({$this->modelNameSpace}{$relations[$column->name]}::find()->all(), 'id', 'name')])";
+        } elseif ($column->name=='lft' || $column->name=='rgt' || $column->name=='depth' || $column->name=='pos') {
             return '';
         } elseif ($column->phpType === 'boolean' || $column->size == 1) {
             return "\$form->field(\$model, '$attribute')->checkbox()";
@@ -300,7 +308,13 @@ class Generator extends \yii\gii\Generator
      */
     public function generateColumnFormat($column)
     {
-        if($column->name=='lft' || $column->name=='rgt' || $column->name=='depth' || $column->name=='pos') {
+        $relations = $this->getRelations();
+
+        if (isset($relations[$column->name])) {
+            return [
+                '[\'attribute\'=>\''.$column->name.'\', \'value\'=>function($model) {return $model->'.$this->generateRelationName($column->name).'->name;}]'
+            ];
+        } elseif($column->name=='lft' || $column->name=='rgt' || $column->name=='depth' || $column->name=='pos') {
             return '';
         } elseif ($column->phpType === 'boolean' || $column->size==1) {
             return 'boolean';
@@ -319,6 +333,24 @@ class Generator extends \yii\gii\Generator
         } else {
             return 'text';
         }
+    }
+
+    /**
+     * Generates column format
+     * @param \yii\db\ColumnSchema $column
+     * @return string
+     */
+    public function generateColumnViewFormat($column)
+    {
+        $relations = $this->getRelations();
+
+        if (isset($relations[$column->name])) {
+            return [
+                '[\'attribute\'=>\''.$column->name.'\', \'value\'=>$model->'.$this->generateRelationName($column->name).'->name]'
+            ];
+        }
+
+        return $this->generateColumnFormat($column);
     }
 
     /**
@@ -569,5 +601,108 @@ class Generator extends \yii\gii\Generator
 
             return $model->attributes();
         }
+    }
+
+    protected $_relations;
+
+    /**
+     * @return array the generated relation declarations
+     */
+    protected function getRelations()
+    {
+        if(isset($this->_relations)) return $this->_relations;
+
+        $relations = [];
+
+        /**
+         * @var $modelClass ActiveRecord
+         */
+        $modelClass = $this->modelClass;
+        $db = $modelClass::getDb();
+        $table = $modelClass::getTableSchema();
+
+        foreach ($table->foreignKeys as $refs) {
+            $refTable = $refs[0];
+            $refTableSchema = $db->getTableSchema($refTable);
+            if ($refTableSchema === null) {
+                // Foreign key could point to non-existing table: https://github.com/yiisoft/yii2-gii/issues/34
+                continue;
+            }
+            unset($refs[0]);
+            $fks = array_keys($refs);
+            $refClassName = $this->generateClassName($refTable);
+            $relations[$fks[0]] = $refClassName;
+        }
+
+        $this->_relations = $relations;
+
+        return $relations;
+    }
+
+    protected $classNames;
+
+    /**
+     * Generates a class name from the specified table name.
+     * @param string $tableName the table name (which may contain schema prefix)
+     * @param boolean $useSchemaName should schema name be included in the class name, if present
+     * @return string the generated class name
+     */
+    protected function generateClassName($tableName, $useSchemaName = null)
+    {
+        if (isset($this->classNames[$tableName])) {
+            return $this->classNames[$tableName];
+        }
+
+        $schemaName = '';
+        $fullTableName = $tableName;
+        if (($pos = strrpos($tableName, '.')) !== false) {
+            if (($useSchemaName === null && $this->useSchemaName) || $useSchemaName) {
+                $schemaName = substr($tableName, 0, $pos) . '_';
+            }
+            $tableName = substr($tableName, $pos + 1);
+        }
+
+        /**
+         * @var $modelClass ActiveRecord
+         */
+        $modelClass = $this->modelClass;
+        $db = $modelClass::getDb();
+        $patterns = [];
+        $patterns[] = "/^{$db->tablePrefix}(.*?)$/";
+        $patterns[] = "/^(.*?){$db->tablePrefix}$/";
+        $className = $tableName;
+        foreach ($patterns as $pattern) {
+            if (preg_match($pattern, $tableName, $matches)) {
+                $className = $matches[1];
+                break;
+            }
+        }
+
+        return $this->classNames[$fullTableName] = Inflector::id2camel($schemaName.$className, '_');
+    }
+
+    public function getModelNameSpace() {
+        $m = explode('\\', $this->modelClass);
+        array_pop($m);
+        return implode('\\', $m).'\\';
+    }
+
+    /**
+     * Generate a relation name for the specified table and a base name.
+     * @param array $relations the relations being generated currently.
+     * @param \yii\db\TableSchema $table the table schema
+     * @param string $key a base name that the relation name may be generated from
+     * @param boolean $multiple whether this is a has-many relation
+     * @return string the relation name
+     */
+    public function generateRelationName($key, $multiple=false)
+    {
+        if (!empty($key) && substr_compare($key, 'id', -2, 2, true) === 0 && strcasecmp($key, 'id')) {
+            $key = rtrim(substr($key, 0, -2), '_');
+        }
+        if ($multiple) {
+            $key = Inflector::pluralize($key);
+        }
+        return strtolower(Inflector::id2camel($key, '_'));
     }
 }

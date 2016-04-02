@@ -48,8 +48,12 @@ if (($tableSchema = $generator->getTableSchema()) === false) {
     }
 } else {
     foreach ($generator->getTableSchema()->columns as $column) {
-        if ($format = $generator->generateColumnFormat($column)) {
-            if ($column->type === 'datetime' || $column->type === 'timestamp') {
+        if ($format = $generator->generateColumnViewFormat($column)) {
+            if(is_array($format)) {
+                foreach($format as $line) {
+                    echo "            ".$line.",\n";
+                }
+            } elseif ($column->type === 'datetime' || $column->type === 'timestamp') {
                 echo "            [
                 'attribute'=>'$column->name',
                 'format'=>'datetime',

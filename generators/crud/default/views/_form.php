@@ -19,6 +19,7 @@ echo "<?php\n";
 use yii\helpers\Html;
 use shirase\form\ActiveForm;
 use kartik\datecontrol\DateControl;
+use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
 /* @var $model <?= ltrim($generator->modelClass, '\\') ?> */

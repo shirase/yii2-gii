@@ -240,7 +240,7 @@ class Generator extends \yii\gii\Generator
         }
         $column = $tableSchema->columns[$attribute];
         if (isset($relations[$column->name])) {
-            return "\$form->field(\$model, '$attribute')->widget(kartik\\select2\\Select2::className(), ['data'=>[''=>'-']+ArrayHelper::map({$this->modelNameSpace}{$relations[$column->name]}::find()->all(), 'id', 'name')])";
+            return "\$form->field(\$model, '$attribute')->widget(kartik\\select2\\Select2::className(), ['data'=>[''=>'-']+ArrayHelper::map({$relations[$column->name]->modelClass}::find()->all(), 'id', 'name')])";
         } elseif ($column->phpType === 'boolean' || $column->size == 1) {
             return "\$form->field(\$model, '$attribute')->checkbox()";
         } elseif ($column->type === 'text') {
@@ -287,7 +287,7 @@ class Generator extends \yii\gii\Generator
         }
         $column = $tableSchema->columns[$attribute];
         if (isset($relations[$column->name])) {
-            return "\$form->field(\$model, '$attribute')->widget(kartik\\select2\\Select2::className(), ['data'=>[''=>'-']+ArrayHelper::map({$this->modelNameSpace}{$relations[$column->name]}::find()->all(), 'id', 'name')])";
+            return "\$form->field(\$model, '$attribute')->widget(kartik\\select2\\Select2::className(), ['data'=>[''=>'-']+ArrayHelper::map({$relations[$column->name]->modelClass}::find()->all(), 'id', 'name')])";
         } elseif ($column->name=='lft' || $column->name=='rgt' || $column->name=='depth' || $column->name=='pos') {
             return '';
         } elseif ($column->phpType === 'boolean' || $column->size == 1) {
@@ -604,11 +604,57 @@ class Generator extends \yii\gii\Generator
     }
 
     protected $_relations;
+    protected $_manyRelations;
 
     /**
      * @return array the generated relation declarations
      */
-    protected function getRelations()
+    public function getManyRelations()
+    {
+        if(isset($this->_manyRelations)) return $this->_manyRelations;
+
+        $relations = [];
+
+        /**
+         * @var $modelClass ActiveRecord
+         * @var $model ActiveRecord
+         */
+        $modelClass = $this->modelClass;
+        $model = new $modelClass();
+        $modelTable = $modelClass::getTableSchema();
+        $db = $modelClass::getDb();
+
+        foreach ($db->getSchema()->getTableSchemas() as $table) {
+            if (($junctionFks = $this->checkJunctionTable($table, $db)) !== false) {
+                foreach ($junctionFks as $pair) {
+                    list($firstKey, $secondKey) = $pair;
+                    $table0 = $firstKey[0];
+                    $table1 = $secondKey[0];
+                    unset($firstKey[0], $secondKey[0]);
+                    if ($table0 === $modelTable->name) {
+                        $relationName = $this->generateRelationName($table1, true);
+                        if($relation = $model->getRelation($relationName, false)) {
+                            $relations[$relationName] = $relation;
+                        }
+                    } elseif ($table1 === $modelTable->name) {
+                        $relationName = $this->generateRelationName($table0, true);
+                        if($relation = $model->getRelation($relationName, false)) {
+                            $relations[$relationName] = $relation;
+                        }
+                    }
+                }
+            }
+        }
+
+        $this->_manyRelations = $relations;
+
+        return $relations;
+    }
+
+    /**
+     * @return array the generated relation declarations
+     */
+    public function getRelations()
     {
         if(isset($this->_relations)) return $this->_relations;
 
@@ -616,12 +662,14 @@ class Generator extends \yii\gii\Generator
 
         /**
          * @var $modelClass ActiveRecord
+         * @var $model ActiveRecord
          */
         $modelClass = $this->modelClass;
+        $model = new $modelClass();
+        $modelTable = $modelClass::getTableSchema();
         $db = $modelClass::getDb();
-        $table = $modelClass::getTableSchema();
 
-        foreach ($table->foreignKeys as $refs) {
+        foreach ($modelTable->foreignKeys as $refs) {
             $refTable = $refs[0];
             $refTableSchema = $db->getTableSchema($refTable);
             if ($refTableSchema === null) {
@@ -630,13 +678,56 @@ class Generator extends \yii\gii\Generator
             }
             unset($refs[0]);
             $fks = array_keys($refs);
-            $refClassName = $this->generateClassName($refTable);
-            $relations[$fks[0]] = $refClassName;
+            $relationName = $this->generateRelationName($fks[0], false);
+            if($relation = $model->getRelation($relationName, false)) {
+                $relations[$fks[0]] = $relation;
+            }
         }
 
         $this->_relations = $relations;
 
         return $relations;
+    }
+
+    /**
+     * Checks if the given table is a junction table, that is it has at least one pair of unique foreign keys.
+     * @param \yii\db\TableSchema the table being checked
+     * @return array|boolean all unique foreign key pairs if the table is a junction table,
+     * or false if the table is not a junction table.
+     */
+    protected function checkJunctionTable($table, $db)
+    {
+        if (count($table->foreignKeys) < 2) {
+            return false;
+        }
+        $uniqueKeys = [$table->primaryKey];
+        try {
+            $uniqueKeys = array_merge($uniqueKeys, $db->getSchema()->findUniqueIndexes($table));
+        } catch (NotSupportedException $e) {
+            // ignore
+        }
+        $result = [];
+        // find all foreign key pairs that have all columns in an unique constraint
+        $foreignKeys = array_values($table->foreignKeys);
+        for ($i = 0; $i < count($foreignKeys); $i++) {
+            $firstColumns = $foreignKeys[$i];
+            unset($firstColumns[0]);
+
+            for ($j = $i + 1; $j < count($foreignKeys); $j++) {
+                $secondColumns = $foreignKeys[$j];
+                unset($secondColumns[0]);
+
+                $fks = array_merge(array_keys($firstColumns), array_keys($secondColumns));
+                foreach ($uniqueKeys as $uniqueKey) {
+                    if (count(array_diff(array_merge($uniqueKey, $fks), array_intersect($uniqueKey, $fks))) === 0) {
+                        // save the foreign key pair
+                        $result[] = [$foreignKeys[$i], $foreignKeys[$j]];
+                        break;
+                    }
+                }
+            }
+        }
+        return empty($result) ? false : $result;
     }
 
     protected $classNames;

@@ -2,6 +2,7 @@
 /**
  * This is the template for generating the model class of a specified table.
  */
+use yii\helpers\Json;
 
 /* @var $this yii\web\View */
 /* @var $generator yii\gii\generators\model\Generator */
@@ -13,7 +14,7 @@
 /* @var $rules string[] list of validation rules */
 /* @var $relations array list of relations (name => relation declaration) */
 
-$sortable = [];
+$behaviors = [];
 
 echo "<?php\n";
 ?>
@@ -26,7 +27,7 @@ use Yii;
  * This is the model class for table "<?= $generator->generateTableName($tableName) ?>".
  *
 <?php foreach ($tableSchema->columns as $column): ?>
- * @property <?= "{$column->phpType} \${$column->name}\n" ?><?php if($column->name==='pos') $sortable['pos']=true; ?><?php if($column->name==='pid') $sortable['pid']=true; ?>
+ * @property <?= "{$column->phpType} \${$column->name}\n" ?>
 <?php endforeach; ?>
 <?php if (!empty($relations)): ?>
  *
@@ -55,17 +56,18 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
     }
 <?php endif; ?>
 
-<?php if ($sortable): ?>
+<?php if ($behaviors = $generator->generateBehaviors($tableSchema)): ?>
     /**
     * @inheritdoc
     */
     public function behaviors()
     {
         return [
-            [
-                'class' => \shirase\tree\TreeBehavior::className(),
-<?php if (!$sortable['pid']) echo str_repeat(" ", 16)."'pid'=>false,\n"; ?><?php if (!$sortable['pos']) echo str_repeat(" ", 16)."'pos'=>false,\n"; ?>
-            ]
+<?php
+    foreach($behaviors as $behavior) {
+        echo $behavior;
+    }
+?>
         ];
     }
 <?php endif; ?>

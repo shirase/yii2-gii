@@ -242,7 +242,7 @@ class Generator extends \yii\gii\Generator
         if (isset($relations[$column->name])) {
             return "\$form->field(\$model, '$attribute')->widget(kartik\\select2\\Select2::className(), ['data'=>[''=>'-']+ArrayHelper::map({$relations[$column->name]->modelClass}::find()->all(), 'id', 'name')])";
         } elseif ($column->phpType === 'boolean' || $column->size == 1) {
-            return "\$form->field(\$model, '$attribute')->checkbox()";
+            return "\$form->field(\$model, '$attribute')->dropDownList(['1'=>Yii::t('common', 'Yes'), '0'=>Yii::t('common', 'No')])";
         } elseif ($column->type === 'text') {
             return "\$form->field(\$model, '$attribute')->textarea(['rows' => 6])";
         } elseif($column->type === 'date'){
@@ -288,10 +288,10 @@ class Generator extends \yii\gii\Generator
         $column = $tableSchema->columns[$attribute];
         if (isset($relations[$column->name])) {
             return "\$form->field(\$model, '$attribute')->widget(kartik\\select2\\Select2::className(), ['data'=>[''=>'-']+ArrayHelper::map({$relations[$column->name]->modelClass}::find()->all(), 'id', 'name')])";
-        } elseif ($column->name=='lft' || $column->name=='rgt' || $column->name=='depth' || $column->name=='pos') {
+        } elseif ($column->name=='lft' || $column->name=='rgt' || $column->name=='depth' || $column->name=='pos' || $column->name=='bpath' || $column->name=='pid') {
             return '';
         } elseif ($column->phpType === 'boolean' || $column->size == 1) {
-            return "\$form->field(\$model, '$attribute')->checkbox()";
+            return "\$form->field(\$model, '$attribute')->dropDownList([''=>'-', '1'=>Yii::t('common', 'Yes'), '0'=>Yii::t('common', 'No')])";
         } elseif($column->type === 'date'){
             return "\$form->field(\$model, '$attribute')->widget(DateRangePicker::classname(), ['hideInput'=>true, 'convertFormat'=>true, 'pluginOptions'=>['locale'=>['format'=>((\$m=\Yii::\$app->getModule('datecontrol')) ? \kartik\datecontrol\Module::parseFormat(\$m->displaySettings['date'], 'date') : 'Y-m-d')]]])";
         } elseif($column->type === 'datetime' || $column->type === 'timestamp'){
@@ -314,7 +314,7 @@ class Generator extends \yii\gii\Generator
             return [
                 '[\'attribute\'=>\''.$column->name.'\', \'value\'=>function($model) {return $model->'.$this->generateRelationName($column->name).'->name;}]'
             ];
-        } elseif($column->name=='lft' || $column->name=='rgt' || $column->name=='depth' || $column->name=='pos') {
+        } elseif($column->name=='lft' || $column->name=='rgt' || $column->name=='depth' || $column->name=='pos' || $column->name=='bpath' || $column->name=='pid') {
             return '';
         } elseif ($column->phpType === 'boolean' || $column->size==1) {
             return 'boolean';
@@ -457,7 +457,7 @@ class Generator extends \yii\gii\Generator
         $likeConditions = [];
         $hashConditions = [];
         foreach ($columns as $column => $type) {
-            if($column==='lft' || $column==='rgt' || $column==='depth' || $column==='pos') {
+            if($column==='lft' || $column==='rgt' || $column==='depth' || $column==='pos' || $column->name=='bpath' || $column->name=='pid') {
                 continue;
             }
 
@@ -621,6 +621,15 @@ class Generator extends \yii\gii\Generator
          */
         $modelClass = $this->modelClass;
         $model = new $modelClass();
+
+        /*foreach ($model->getBehaviors() as $behavior) {
+            if($behavior->className() == 'voskobovich\\behaviors\\ManyToManyBehavior') {
+                foreach (array_keys($behavior->relations) as $attribute) {
+
+                }
+            }
+        }*/
+
         $modelTable = $modelClass::getTableSchema();
         $db = $modelClass::getDb();
 
@@ -634,14 +643,14 @@ class Generator extends \yii\gii\Generator
                     if ($table0 === $modelTable->name) {
                         $relationName = $this->generateRelationName($table1, true);
                         if($relation = $model->getRelation($relationName, false)) {
-                            $relations[$relationName] = $relation;
+                            $relations[$table1.'_ids'] = $relation;
                         }
-                    } elseif ($table1 === $modelTable->name) {
+                    }/* elseif ($table1 === $modelTable->name) {
                         $relationName = $this->generateRelationName($table0, true);
                         if($relation = $model->getRelation($relationName, false)) {
                             $relations[$relationName] = $relation;
                         }
-                    }
+                    }*/
                 }
             }
         }

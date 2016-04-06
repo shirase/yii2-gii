@@ -249,7 +249,7 @@ class Generator extends \yii\gii\Generator
     {
         $labels = [];
         foreach ($table->columns as $column) {
-            if($column->name==='lft' || $column->name==='rgt' || $column->name==='depth' || $column->name==='pos') {
+            if($column->name==='lft' || $column->name==='rgt' || $column->name==='depth' || $column->name==='pos' || $column->name=='bpath' || $column->name=='pid') {
                 continue;
             }
             if ($this->generateLabelsFromComments && !empty($column->comment)) {
@@ -281,7 +281,7 @@ class Generator extends \yii\gii\Generator
             if ($column->autoIncrement) {
                 continue;
             }
-            if($column->name==='lft' || $column->name==='rgt' || $column->name==='depth' || $column->name==='pos') {
+            if($column->name==='lft' || $column->name==='rgt' || $column->name==='depth' || $column->name==='pos' || $column->name=='bpath' || $column->name=='pid') {
                 continue;
             }
             if (!$column->allowNull && $column->defaultValue === null) {
@@ -365,6 +365,28 @@ class Generator extends \yii\gii\Generator
             }
             $targetAttributes = implode(', ', $targetAttributes);
             $rules[] = "[['$attributes'], 'exist', 'skipOnError' => true, 'targetClass' => $refClassName::className(), 'targetAttribute' => [$targetAttributes]]";
+        }
+
+        $manyManyAttributes = [];
+        foreach ($this->getSchemaNames() as $schemaName) {
+            foreach ($db->getSchema()->getTableSchemas($schemaName) as $table) {
+                if (($junctionFks = $this->checkJunctionTable($table)) === false) {
+                    continue;
+                }
+
+                foreach ($junctionFks as $pair) {
+                    list($firstKey, $secondKey) = $pair;
+                    $table0 = $firstKey[0];
+                    $table1 = $secondKey[0];
+                    if ($table0==$this->tableName) {
+                        $manyManyAttributes[] = $table1.'_ids';
+                    }
+                }
+            }
+        }
+
+        if ($manyManyAttributes) {
+            $rules[] = "[['".implode("', '", $manyManyAttributes)."'], 'each', 'rule' => ['integer']]";
         }
 
         return $rules;
@@ -852,5 +874,40 @@ class Generator extends \yii\gii\Generator
         }
 
         return false;
+    }
+
+    public function generateBehaviors($tableSchema) {
+        $behaviors = [];
+        foreach ($tableSchema->columns as $column) {
+            if($column->name==='pos') {
+                $behaviors[] = "            [\n                'class' => \\shirase\\tree\\TreeBehavior::className(),\n            ],\n";
+            }
+        }
+
+        $manyManyRelations = [];
+        $db = $this->getDbConnection();
+        foreach ($this->getSchemaNames() as $schemaName) {
+            foreach ($db->getSchema()->getTableSchemas($schemaName) as $table) {
+                if (($junctionFks = $this->checkJunctionTable($table)) === false) {
+                    continue;
+                }
+
+                foreach ($junctionFks as $pair) {
+                    list($firstKey, $secondKey) = $pair;
+                    $table0 = $firstKey[0];
+                    $table1 = $secondKey[0];
+                    if ($table0==$this->tableName) {
+                        $relationName = Inflector::pluralize($table1);
+                        $manyManyRelations[] = "\n                    '{$table1}_ids' => '{$relationName}',";
+                    }
+                }
+            }
+        }
+
+        if ($manyManyRelations) {
+            $behaviors[] = "            [\n                'class' => \\voskobovich\\behaviors\\ManyToManyBehavior::className(),\n                'relations' => [".implode('', $manyManyRelations)."\n                ]\n            ],\n";
+        }
+
+        return $behaviors;
     }
 }

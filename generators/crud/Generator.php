@@ -288,7 +288,7 @@ class Generator extends \yii\gii\Generator
         $column = $tableSchema->columns[$attribute];
         if (isset($relations[$column->name])) {
             return "\$form->field(\$model, '$attribute')->widget(kartik\\select2\\Select2::className(), ['data'=>[''=>'-']+ArrayHelper::map({$relations[$column->name]->modelClass}::find()->all(), 'id', 'name')])";
-        } elseif ($column->name=='lft' || $column->name=='rgt' || $column->name=='depth' || $column->name=='pos' || $column->name=='bpath' || $column->name=='pid') {
+        } elseif ($column->name=='lft' || $column->name=='rgt' || $column->name=='depth' || $column->name=='pos' || $column->name=='bpath' || $column->name=='pid' || $column->name=='created_at' || $column->name=='updated_at') {
             return '';
         } elseif ($column->phpType === 'boolean' || $column->size == 1) {
             return "\$form->field(\$model, '$attribute')->dropDownList([''=>'-', '1'=>Yii::t('common', 'Yes'), '0'=>Yii::t('common', 'No')])";
@@ -314,7 +314,7 @@ class Generator extends \yii\gii\Generator
             return [
                 '[\'attribute\'=>\''.$column->name.'\', \'value\'=>function($model) {return $model->'.$this->generateRelationName($column->name).'->name;}]'
             ];
-        } elseif($column->name=='lft' || $column->name=='rgt' || $column->name=='depth' || $column->name=='pos' || $column->name=='bpath' || $column->name=='pid') {
+        } elseif($column->name=='lft' || $column->name=='rgt' || $column->name=='depth' || $column->name=='pos' || $column->name=='bpath' || $column->name=='pid' || $column->name=='created_at' || $column->name=='updated_at') {
             return '';
         } elseif ($column->phpType === 'boolean' || $column->size==1) {
             return 'boolean';
@@ -457,7 +457,7 @@ class Generator extends \yii\gii\Generator
         $likeConditions = [];
         $hashConditions = [];
         foreach ($columns as $column => $type) {
-            if($column==='lft' || $column==='rgt' || $column==='depth' || $column==='pos' || $column->name=='bpath' || $column->name=='pid') {
+            if($column==='lft' || $column==='rgt' || $column==='depth' || $column==='pos' || $column->name=='bpath' || $column->name=='pid' || $column->name=='created_at' || $column->name=='updated_at') {
                 continue;
             }
 

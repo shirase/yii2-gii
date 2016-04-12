@@ -62,6 +62,23 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
         ];
     }
 
+    public function actions()
+    {
+        return ArrayHelper::merge(parent::actions(), [
+            'edit' => [
+                'class' => EditableColumnAction::className(),
+                'modelClass' => <?= $modelClass ?>::className(),
+                /*'outputValue' => function ($model, $attribute, $key, $index) {
+                    return (int) $model->$attribute;
+                },
+                'outputMessage' => function($model, $attribute, $key, $index) {
+                    return '';
+                },*/
+                'showModelErrors' => true,
+            ]
+        ]);
+    }
+
     /**
      * Lists all <?= $modelClass ?> models.
      * @return mixed
@@ -69,25 +86,6 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
     public function actionIndex()
     {
 <?php if (!empty($generator->searchModelClass)): ?>
-        if (Yii::$app->request->post('hasEditable')) {
-            if (!Yii::$app->user->can('/' . \common\components\helpers\Url::normalizeRoute('update'))) {
-                throw new HttpException(403);
-            }
-
-            $model = $this->findModel(Yii::$app->request->post('editableKey'));
-
-            $out = Json::encode(['output'=>'', 'message'=>'']);
-
-            $posted = current($_POST['<?= $modelClass ?>']);
-            $post = ['<?= $modelClass ?>' => $posted];
-
-            if ($model->load($post)) {
-                $model->save();
-            }
-            echo $out;
-            return;
-        }
-
         $searchModel = new <?= isset($searchModelAlias) ? $searchModelAlias : $searchModelClass ?>();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 

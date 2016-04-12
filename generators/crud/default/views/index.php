@@ -13,6 +13,7 @@ $nameAttribute = $generator->getNameAttribute();
 echo "<?php\n";
 ?>
 
+use yii\helpers\Url;
 use yii\helpers\Html;
 use <?= $generator->indexWidgetType === 'grid' ? "kartik\\grid\\GridView" : "yii\\widgets\\ListView" ?>;
 <?= $generator->enablePjax ? 'use yii\widgets\Pjax;' : '' ?>
@@ -81,6 +82,12 @@ if (($tableSchema = $generator->getTableSchema()) === false) {
                     'update' => \Yii::$app->user->can('/' . \common\components\helpers\Url::normalizeRoute('update')),
                     'delete' => \Yii::$app->user->can('/' . \common\components\helpers\Url::normalizeRoute('delete')),
                 ],
+                'urlCreator' =>
+                    function ($action, $model, $key, $index) {
+                        $params = is_array($key) ? $key : ['id' => (string) $key];
+                        $params[0] = $action;
+                        return Url::toRoute($params+$this->context->actionParams);
+                    }
             ],
         ],
     ]); ?>

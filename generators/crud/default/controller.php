@@ -41,6 +41,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\Json;
 use yii\helpers\Url;
+use yii\helpers\ArrayHelper;
 
 /**
  * <?= $controllerClass ?> implements the CRUD actions for <?= $modelClass ?> model.
@@ -68,12 +69,6 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
             'edit' => [
                 'class' => EditableColumnAction::className(),
                 'modelClass' => <?= $modelClass ?>::className(),
-                /*'outputValue' => function ($model, $attribute, $key, $index) {
-                    return (int) $model->$attribute;
-                },
-                'outputMessage' => function($model, $attribute, $key, $index) {
-                    return '';
-                },*/
                 'showModelErrors' => true,
             ]
         ]);

@@ -91,7 +91,10 @@ if (($tableSchema = $generator->getTableSchema()) === false) {
                 'type'=>DetailView::INPUT_CHECKBOX,
             ],\n";
             } else {
-                echo "            '" . $column->name . ($format === 'text' ? "" : ":" . $format) . "',\n";
+                //echo "            '" . $column->name . ($format === 'text' ? "" : ":" . $format) . "',\n";
+                echo "            [
+                'attribute'=>'$column->name',".($format === 'text' ? "" : "\n                'format'=>'$format',")."
+            ],\n";
             }
         }
     }

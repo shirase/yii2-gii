@@ -42,6 +42,7 @@ use yii\filters\VerbFilter;
 use yii\helpers\Json;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
+use kartik\grid\EditableColumnAction;
 
 /**
  * <?= $controllerClass ?> implements the CRUD actions for <?= $modelClass ?> model.

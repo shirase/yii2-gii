@@ -281,7 +281,7 @@ class Generator extends \yii\gii\Generator
             if ($column->autoIncrement) {
                 continue;
             }
-            if($column->name==='lft' || $column->name==='rgt' || $column->name==='depth' || $column->name==='pos' || $column->name=='bpath' || $column->name=='pid') {
+            if($column->name==='lft' || $column->name==='rgt' || $column->name==='depth' || $column->name==='pos' || $column->name=='bpath' || $column->name=='pid' || $column->name=='created_at' || $column->name=='updated_at' || $column->name=='author_id' || $column->name=='updater_id') {
                 continue;
             }
             if (!$column->allowNull && $column->defaultValue === null) {
@@ -878,10 +878,33 @@ class Generator extends \yii\gii\Generator
 
     public function generateBehaviors($tableSchema) {
         $behaviors = [];
+        $columnNames = [];
         foreach ($tableSchema->columns as $column) {
-            if($column->name==='pos') {
-                $behaviors[] = "            [\n                'class' => \\shirase\\tree\\TreeBehavior::className(),\n            ],\n";
-            }
+            $columnNames[$column->name] = true;
+        }
+
+        if (isset($columnNames['pos'])) {
+            $behaviors[] = "            [\n                'class' => \\shirase\\tree\\TreeBehavior::className(),\n            ],\n";
+        }
+
+        if (isset($columnNames['slug'])) {
+            $behaviors[] = "            [\n                'class' => \\yii\\behaviors\\SluggableBehavior::className(),\n                'attribute'=>'".($columnNames['name'] ? 'name' : 'title')."',\n                'immutable' => true,\n            ],\n";
+        }
+
+        if (isset($columnNames['created_at']) && isset($columnNames['updated_at'])) {
+            $behaviors[] = "            [\n                'class' => \\yii\\behaviors\\TimestampBehavior::className(),\n                'value' => function() {return date(DATE_ISO8601);},\n            ],\n";
+        } elseif (isset($columnNames['created_at'])) {
+            $behaviors[] = "            [\n                'class' => \\yii\\behaviors\\TimestampBehavior::className(),\n                'value' => function() {return date(DATE_ISO8601);},\n                'updatedAtAttribute' => false\n            ],\n";
+        } elseif (isset($columnNames['updated_at'])) {
+            $behaviors[] = "            [\n                'class' => \\yii\\behaviors\\TimestampBehavior::className(),\n                'value' => function() {return date(DATE_ISO8601);},\n                'createdAtAttribute' => false\n            ],\n";
+        }
+
+        if (isset($columnNames['author_id']) && isset($columnNames['updater_id'])) {
+            $behaviors[] = "            [\n                'class' => \\yii\\behaviors\\BlameableBehavior::className(),\n                'createdByAttribute' => 'author_id',\n                'updatedByAttribute' => 'updater_id'\n            ],\n";
+        } elseif (isset($columnNames['author_id'])) {
+            $behaviors[] = "            [\n                'class' => \\yii\\behaviors\\BlameableBehavior::className(),\n                'createdByAttribute' => 'author_id',\n                'updatedByAttribute' => false\n            ],\n";
+        } elseif (isset($columnNames['updater_id'])) {
+            $behaviors[] = "            [\n                'class' => \\yii\\behaviors\\BlameableBehavior::className(),\n                'createdByAttribute' => false,\n                'updatedByAttribute' => 'updater_id'\n            ],\n";
         }
 
         $manyManyRelations = [];

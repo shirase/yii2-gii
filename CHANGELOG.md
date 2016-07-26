@@ -1,8 +1,20 @@
 Yii Framework 2 gii extension Change Log
 ========================================
 
-2.0.5 under development
+2.0.6 under development
 -----------------------
+
+- Bug #100, #102: Fixed "Check This File" button in the preview modal (Insensus, thiagotalma)
+- Bug #149: Relation names no longer override existing methods and properties (Faryshta)
+- Bug #152: Fixed generating model without any rules (and800)
+- Enh #153: Added filename filter to generated files list preview (thiagotalma)
+- Enh #162: Model generator now detects foreign keys named as `id_*` (mootensai, samdark)
+- Bug #126, #139: Fixed model generator form validation when "ActiveQuery Class" is invalid but unused (kikimor)
+- Enh #167: Added option for generating relations from current schema only (zlakomanoff)
+- Bug #166: Fixed "Trying to get property of non-object" during model generation (zlakomanoff)
+
+2.0.5 March 18, 2016
+--------------------
 
 - Bug #66: It was impossible to use tables with spaces (cornernote)
 - Bug #79: There was no form element to toggle using schema name for class name (phpniki)

@@ -37,7 +37,6 @@ class Generator extends \yii\gii\Generator
     public $baseControllerClass = 'common\components\web\Controller';
     public $indexWidgetType = 'grid';
     public $searchModelClass = '';
-
     public $enableI18N = true;
     public $messageCategory = 'app';
 
@@ -46,6 +45,7 @@ class Generator extends \yii\gii\Generator
      * @since 2.0.5
      */
     public $enablePjax = true;
+
 
     /**
      * @inheritdoc

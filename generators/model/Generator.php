@@ -16,6 +16,7 @@ use yii\db\TableSchema;
 use yii\gii\CodeFile;
 use yii\helpers\Inflector;
 use yii\base\NotSupportedException;
+use yii\helpers\Json;
 
 /**
  * This generator will generate one or multiple ActiveRecord classes for the specified database table.
@@ -912,11 +913,50 @@ class Generator extends \yii\gii\Generator
         return false;
     }
 
+    public function getLangTableSchema($tableSchema) {
+        $db = $this->getDbConnection();
+        $tables = $db->getSchema()->getTableNames();
+        if (array_search($tableSchema->name . '_lang', $tables) !== false) {
+            return $this->getDbConnection()->getTableSchema($tableSchema->name . '_lang');
+        }
+        return false;
+    }
+
+    public function getLangAttributes($langTableSchema, $tableSchema) {
+        $attributes = [];
+        foreach ($langTableSchema->columns as $column) {
+            if ($column->isPrimaryKey) continue;
+            if ($column->name == 'language') continue;
+            if ($column->name == "{$tableSchema->name}_id") continue;
+            $attributes[] = $column->name;
+        }
+        return $attributes;
+    }
+
+    /**
+     * @param TableSchema $tableSchema
+     * @return array
+     * @throws NotSupportedException
+     */
     public function generateBehaviors($tableSchema) {
         $behaviors = [];
         $columnNames = [];
         foreach ($tableSchema->columns as $column) {
             $columnNames[$column->name] = true;
+        }
+
+        $langTableSchema = $this->getLangTableSchema($tableSchema);
+        if ($langTableSchema) {
+            $attributes = Json::encode($this->getLangAttributes($langTableSchema, $tableSchema));
+            $behavior = "            [\n";
+            $behavior .= "                'class' => \\omgdef\\multilingual\\MultilingualBehavior::className(),\n";
+            $behavior .= "                'languages' => Yii::\$app->params['availableLocales'],\n";
+            $behavior .= "                'defaultLanguage' => Yii::\$app->params['availableLocales'][0],\n";
+            $behavior .= "                'langForeignKey' => '{$tableSchema->name}_id',\n";
+            $behavior .= "                'tableName' => '{{%{$langTableSchema->name}}}',\n";
+            $behavior .= "                'attributes' => $attributes,\n";
+            $behavior .= "            ],\n";
+            $behaviors[] = $behavior;
         }
 
         if (isset($columnNames['pos'])) {

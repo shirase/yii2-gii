@@ -25,6 +25,11 @@ use yii\helpers\ArrayHelper;
     <?= "<?php " ?>$form = ActiveForm::begin([
         'action' => ['index'],
         'method' => 'get',
+<?php if ($generator->enablePjax): ?>
+        'options' => [
+            'data-pjax' => 1
+        ],
+<?php endif; ?>
     ]); ?>
 
 <?php

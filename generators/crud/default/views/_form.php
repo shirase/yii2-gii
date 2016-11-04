@@ -36,7 +36,7 @@ use yii\helpers\ArrayHelper;
     }
 } ?>
 <?php foreach ($generator->getManyRelations() as $attribute => $relation) {
-    echo "    <?= \$form->field(\$model, '$attribute')->widget(kartik\\select2\\Select2::className(), ['options'=>['multiple'=>true], 'data'=>[''=>'-']+ArrayHelper::map({$relation->modelClass}::find()->all(), 'id', 'name')]) ?>\n\n";
+    echo "    <?= \$form->field(\$model, '$attribute')->widget(kartik\\select2\\Select2::className(), ['options'=>['multiple'=>true], 'data'=>ArrayHelper::map({$relation->modelClass}::find()->all(), 'id', 'name')]) ?>\n\n";
 } ?>
     <div class="form-group">
         <?= "<?= " ?>Html::submitButton($model->isNewRecord ? <?= $generator->generateString('Create') ?> : <?= $generator->generateString('Update') ?>, ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

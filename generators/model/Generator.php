@@ -951,7 +951,7 @@ class Generator extends \yii\gii\Generator
             $behavior = "            [\n";
             $behavior .= "                'class' => \\omgdef\\multilingual\\MultilingualBehavior::className(),\n";
             $behavior .= "                'languages' => Yii::\$app->params['availableLocales'],\n";
-            $behavior .= "                'defaultLanguage' => Yii::\$app->params['availableLocales'][0],\n";
+            $behavior .= "                'defaultLanguage' => Yii::\$app->language,\n";
             $behavior .= "                'langForeignKey' => '{$tableSchema->name}_id',\n";
             $behavior .= "                'tableName' => '{{%{$langTableSchema->name}}}',\n";
             $behavior .= "                'attributes' => $attributes,\n";

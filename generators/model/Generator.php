@@ -950,7 +950,7 @@ class Generator extends \yii\gii\Generator
             $attributes = Json::encode($this->getLangAttributes($langTableSchema, $tableSchema));
             $behavior = "            [\n";
             $behavior .= "                'class' => \\omgdef\\multilingual\\MultilingualBehavior::className(),\n";
-            $behavior .= "                'languages' => Yii::\$app->params['availableLocales'],\n";
+            $behavior .= "                'languages' => array_keys(Yii::\$app->params['availableLocales']),\n";
             $behavior .= "                'defaultLanguage' => Yii::\$app->language,\n";
             $behavior .= "                'langForeignKey' => '{$tableSchema->name}_id',\n";
             $behavior .= "                'tableName' => '{{%{$langTableSchema->name}}}',\n";

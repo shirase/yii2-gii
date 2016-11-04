@@ -269,6 +269,18 @@ class Generator extends \yii\gii\Generator
             }
         }
 
+        if ($langTableSchema = $this->getLangTableSchema($table)) {
+            if ($attributes = $this->getLangAttributes($langTableSchema, $table)) {
+                foreach ($attributes as $attribute) {
+                    $label = Inflector::camel2words($attribute);
+                    if (!empty($label) && substr_compare($label, ' id', -3, 3, true) === 0) {
+                        $label = substr($label, 0, -3) . ' ID';
+                    }
+                    $labels[$attribute] = $label;
+                }
+            }
+        }
+
         return $labels;
     }
 
@@ -371,10 +383,16 @@ class Generator extends \yii\gii\Generator
             $rules[] = "[['$attributes'], 'exist', 'skipOnError' => true, 'targetClass' => $refClassName::className(), 'targetAttribute' => [$targetAttributes]]";
         }
 
+        if ($langTableSchema = $this->getLangTableSchema($table)) {
+            if ($attributes = $this->getLangAttributes($langTableSchema, $table)) {
+                $rules[] = "[['".implode("', '", $attributes)."'], 'string']";
+            }
+        }
+
         $manyManyAttributes = [];
         foreach ($this->getSchemaNames() as $schemaName) {
-            foreach ($db->getSchema()->getTableSchemas($schemaName) as $table) {
-                if (($junctionFks = $this->checkJunctionTable($table)) === false) {
+            foreach ($db->getSchema()->getTableSchemas($schemaName) as $t) {
+                if (($junctionFks = $this->checkJunctionTable($t)) === false) {
                     continue;
                 }
 
@@ -913,26 +931,6 @@ class Generator extends \yii\gii\Generator
         return false;
     }
 
-    public function getLangTableSchema($tableSchema) {
-        $db = $this->getDbConnection();
-        $tables = $db->getSchema()->getTableNames();
-        if (array_search($tableSchema->name . '_lang', $tables) !== false) {
-            return $this->getDbConnection()->getTableSchema($tableSchema->name . '_lang');
-        }
-        return false;
-    }
-
-    public function getLangAttributes($langTableSchema, $tableSchema) {
-        $attributes = [];
-        foreach ($langTableSchema->columns as $column) {
-            if ($column->isPrimaryKey) continue;
-            if ($column->name == 'language') continue;
-            if ($column->name == "{$tableSchema->name}_id") continue;
-            $attributes[] = $column->name;
-        }
-        return $attributes;
-    }
-
     /**
      * @param TableSchema $tableSchema
      * @return array
@@ -1008,5 +1006,25 @@ class Generator extends \yii\gii\Generator
         }
 
         return $behaviors;
+    }
+
+    public function getLangTableSchema($tableSchema) {
+        $db = $this->getDbConnection();
+        $tables = $db->getSchema()->getTableNames();
+        if (array_search($tableSchema->name . '_lang', $tables) !== false) {
+            return $this->getDbConnection()->getTableSchema($tableSchema->name . '_lang');
+        }
+        return false;
+    }
+
+    public function getLangAttributes($langTableSchema, $tableSchema) {
+        $attributes = [];
+        foreach ($langTableSchema->columns as $column) {
+            if ($column->isPrimaryKey) continue;
+            if ($column->name == 'language') continue;
+            if ($column->name == "{$tableSchema->name}_id") continue;
+            $attributes[] = $column->name;
+        }
+        return $attributes;
     }
 }

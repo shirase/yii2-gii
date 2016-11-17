@@ -93,8 +93,9 @@ if (($tableSchema = $generator->getTableSchema()) === false) {
             ],
         ],
     ]); ?>
+<?= $generator->enablePjax ? "    <?php Pjax::end(); ?>\n" : '' ?>
 <?php else: ?>
-    <?= $generator->enablePjax ? '<?php Pjax::begin(); ?>' : '' ?>
+<?= $generator->enablePjax ? "    <?php Pjax::begin(); ?>\n" : '' ?>
     <?= "<?= " ?>ListView::widget([
         'dataProvider' => $dataProvider,
         'itemOptions' => ['class' => 'item'],
@@ -102,7 +103,6 @@ if (($tableSchema = $generator->getTableSchema()) === false) {
             return Html::a(Html::encode($model-><?= $nameAttribute ?>), ['view', <?= $urlParams ?>]);
         },
     ]) ?>
-    <?= $generator->enablePjax ? '<?php Pjax::end(); ?>' : '' ?>
-<?php endif; ?>
 <?= $generator->enablePjax ? "    <?php Pjax::end(); ?>\n" : '' ?>
+<?php endif; ?>
 </div>

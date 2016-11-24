@@ -36,6 +36,11 @@ use Yii;
 <?php endforeach; ?>
 <?php endif; ?>
  *
+<?php
+if ($langTableSchema = $generator->getLangTableSchema($tableSchema)) {
+    echo ' * @method '.$generator->generateClassName($langTableSchema->name).'|null translate($language)' . "\n";
+}
+?>
  * @method static <?= $className ?>|null findOne($condition)
  */
 class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . "\n" ?>

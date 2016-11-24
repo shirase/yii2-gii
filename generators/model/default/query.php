@@ -31,7 +31,6 @@ namespace <?= $generator->queryNs ?>;
  */
 class <?= $className ?> extends <?= '\\' . ltrim($generator->queryBaseClass, '\\') . "\n" ?>
 {
-<?php if ($generator->getLangTableSchema($tableSchema)) echo "    use \\omgdef\\multilingual\\MultilingualTrait;\n\n" ?>
     /*public function active()
     {
         return $this->andWhere('[[status]]=1');

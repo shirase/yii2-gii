@@ -537,6 +537,9 @@ class Generator extends \yii\gii\Generator
                     $hasMany = $this->isHasManyRelation($table, $fks);
                     $link = $this->generateRelationLink($refs);
                     $relationName = $this->generateRelationName($relations, $refTableSchema, $className, $hasMany);
+                    if (preg_match('/.*_lang$/', $table->name)) {
+                        $relationName = 'Translations';
+                    }
                     $relations[$refTableSchema->fullName][$relationName] = [
                         "return \$this->" . ($hasMany ? 'hasMany' : 'hasOne') . "($className::className(), $link);",
                         $className,
@@ -855,7 +858,7 @@ class Generator extends \yii\gii\Generator
      * @param boolean $useSchemaName should schema name be included in the class name, if present
      * @return string the generated class name
      */
-    protected function generateClassName($tableName, $useSchemaName = null)
+    public function generateClassName($tableName, $useSchemaName = null)
     {
         if (isset($this->classNames[$tableName])) {
             return $this->classNames[$tableName];
@@ -947,12 +950,8 @@ class Generator extends \yii\gii\Generator
         if ($langTableSchema) {
             $attributes = Json::encode($this->getLangAttributes($langTableSchema, $tableSchema));
             $behavior = "            [\n";
-            $behavior .= "                'class' => \\shirase\\multilingual\\MultilingualBehavior::className(),\n";
-            $behavior .= "                'languages' => array_keys(Yii::\$app->params['availableLocales']),\n";
-            $behavior .= "                'defaultLanguage' => Yii::\$app->language,\n";
-            $behavior .= "                'langForeignKey' => '{$tableSchema->name}_id',\n";
-            $behavior .= "                'tableName' => '{{%{$langTableSchema->name}}}',\n";
-            $behavior .= "                'attributes' => $attributes,\n";
+            $behavior .= "                'class' => \\creocoder\\translateable\\TranslateableBehavior::className(),\n";
+            $behavior .= "                'translationAttributes' => $attributes,\n";
             $behavior .= "            ],\n";
             $behaviors[] = $behavior;
         }

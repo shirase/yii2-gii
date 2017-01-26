@@ -39,7 +39,7 @@ use yii\helpers\ArrayHelper;
     echo "    <?= \$form->field(\$model, '$attribute')->widget(kartik\\select2\\Select2::className(), ['options'=>['multiple'=>true], 'data'=>ArrayHelper::map({$relation->modelClass}::find()->all(), 'id', 'name')]) ?>\n\n";
 } ?>
     <div class="form-group">
-        <?= "<?= " ?>Html::submitButton($model->isNewRecord ? <?= $generator->generateString('Create') ?> : <?= $generator->generateString('Update') ?>, ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= "<?= " ?>Html::submitButton(<?= $generator->generateString('Save') ?>, ['class' => 'btn btn-success']) ?>
         <?= "<?= " ?>Html::a(<?= $generator->generateString('Back') ?>, ['index', 'returned'=>true], ['class' => 'btn btn-default']) ?>
     </div>
 

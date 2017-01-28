@@ -46,7 +46,7 @@ class Generator extends \yii\gii\Generator
     public $queryBaseClass = 'common\components\db\ActiveQuery';
 
     public $enableI18N = true;
-    public $messageCategory = 'app';
+    public $messageCategory = 'common';
 
     /**
      * @inheritdoc

@@ -78,6 +78,7 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
         ];
     }
 <?php endif; ?>
+<?php $generator->generatePublic($tableSchema) ?>
 
     /**
      * @inheritdoc

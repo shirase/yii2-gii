@@ -946,6 +946,19 @@ class Generator extends \yii\gii\Generator
             $columnNames[$column->name] = true;
         }
 
+        foreach ($columnNames as $name=>$v) {
+            if (($p=strpos($name, '_path'))!==false) {
+                $short = substr($name, 0, $p);
+                $behavior = "            [\n";
+                $behavior .= "                'class' => \\shirase55\\filekit\\behaviors\\UploadBehavior::className(),\n";
+                $behavior .= "                'attribute' => '$short',\n";
+                $behavior .= "                'pathAttribute' => '$name',\n";
+                $behavior .= "                'urlAttribute' => '{$short}_url',\n";
+                $behavior .= "            ],\n";
+                $behaviors[] = $behavior;
+            }
+        }
+
         $langTableSchema = $this->getLangTableSchema($tableSchema);
         if ($langTableSchema) {
             $attributes = Json::encode($this->getLangAttributes($langTableSchema, $tableSchema));
@@ -1025,5 +1038,36 @@ class Generator extends \yii\gii\Generator
             $attributes[] = $column->name;
         }
         return $attributes;
+    }
+
+    public function generatePublic($tableSchema) {
+        $first = true;
+        foreach ($tableSchema->columns as $column) {
+            if (($p=strpos($column->name, '_path'))!==false) {
+                if($first) {
+                    $first = false;
+                    echo "\n";
+                }
+                echo '    public $'.substr($column->name, 0, $p).";\n";
+            }
+        }
+
+        $first = true;
+        foreach ($tableSchema->columns as $column) {
+            if (($p=strpos($column->name, '_path'))!==false) {
+                if($first) {
+                    $first = false;
+                    echo "\n";
+                }
+                $s = ucfirst(substr($column->name, 0, $p));
+                echo <<<PHP
+    public function get{$s}_url()
+    {
+        return Url::image(\$this->{$column->name}, ['w'=>200]);
+    }
+
+PHP;
+            }
+        }
     }
 }

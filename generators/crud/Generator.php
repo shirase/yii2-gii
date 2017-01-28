@@ -240,7 +240,7 @@ class Generator extends \yii\gii\Generator
         }
         $column = $tableSchema->columns[$attribute];
         if (($p=strpos($column->name, '_path'))!==false) {
-            return "\$form->field(\$model, '".substr($attribute, 1, $p)."')->widget(shirase55\\filekit\\widget\\Upload::className())";
+            return "\$form->field(\$model, '".substr($attribute, 0, $p)."')->widget(shirase55\\filekit\\widget\\Upload::className())";
         } elseif (isset($relations[$column->name])) {
             return "\$form->field(\$model, '$attribute')->widget(kartik\\select2\\Select2::className(), ['data'=>[''=>'-']+ArrayHelper::map({$relations[$column->name]->modelClass}::find()->all(), 'id', 'name')])";
         } elseif ($column->phpType === 'boolean' || $column->size == 1) {

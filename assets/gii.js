@@ -277,47 +277,38 @@ yii.gii = (function ($) {
             }).change();
 
             // crud generator: translate model class to search class
-            $('#crud-generator #generator-modelclass').on('blur', function () {
+            $('#crud-generator #generator-modelclass').on('change', function () {
                 var modelClass = $(this).val();
                 if (modelClass !== '') {
-                    var searchModelClass = $('#generator-searchmodelclass').val();
-                    if (searchModelClass === '') {
-                        searchModelClass = modelClass + 'Search';
-                        var m = searchModelClass.split('\\');
-                        searchModelClass = m.pop();
-                        searchModelClass = m.join('\\') + '\\search\\' + searchModelClass;
-                        $('#generator-searchmodelclass').val(searchModelClass);
-                    }
+                    var searchModelClass = modelClass + 'Search';
+                    var m = searchModelClass.split('\\');
+                    searchModelClass = m.pop();
+                    searchModelClass = m.join('\\') + '\\search\\' + searchModelClass;
+                    $('#generator-searchmodelclass').val(searchModelClass);
                 }
             });
 
             // crud generator: translate model class to controller class
-            $('#crud-generator #generator-modelclass').on('blur', function () {
+            $('#crud-generator #generator-modelclass').on('change', function () {
                 var modelClass = $(this).val();
                 if (modelClass !== '') {
-                    var controllerClass = $('#generator-controllerclass').val();
-                    if (controllerClass === '') {
-                        controllerClass = 'backend\\controllers\\' + modelClass.split('\\').pop() + 'Controller';
-                        $('#generator-controllerclass').val(controllerClass).trigger('blur');
-                    }
+                    var controllerClass = 'backend\\controllers\\' + modelClass.split('\\').pop() + 'Controller';
+                    $('#generator-controllerclass').val(controllerClass).trigger('change');
                 }
             });
 
             // crud generator: translate controller class to view path
-            $('#crud-generator #generator-controllerclass').on('blur', function () {
+            $('#crud-generator #generator-controllerclass').on('change', function () {
                 var controllerClass = $(this).val();
                 if (controllerClass !== '') {
-                    var viewPath = $('#generator-viewpath').val();
-                    if (viewPath === '') {
-                        viewPath = '@' + controllerClass.replace('\\controllers\\', '\\views\\').replace('Controller', '').replace(/\\/g, '/');
-                        var m = viewPath.split('/');
-                        var camelName = m.pop();
-                        var viewDir = camelName.replace(/([A-Z])/g, '-$1');
-                        if(viewDir.substr(0, 1)==='-') viewDir = viewDir.substr(1);
-                        m.push(viewDir);
-                        viewPath = m.join('/').toLowerCase();
-                        $('#generator-viewpath').val(viewPath);
-                    }
+                    var viewPath = '@' + controllerClass.replace('\\controllers\\', '\\views\\').replace('Controller', '').replace(/\\/g, '/');
+                    var m = viewPath.split('/');
+                    var camelName = m.pop();
+                    var viewDir = camelName.replace(/([A-Z])/g, '-$1');
+                    if(viewDir.substr(0, 1)==='-') viewDir = viewDir.substr(1);
+                    m.push(viewDir);
+                    viewPath = m.join('/').toLowerCase();
+                    $('#generator-viewpath').val(viewPath);
                 }
             });
 

@@ -95,7 +95,7 @@ class <?= $className ?> extends <?= '\\' . ltrim($generator->baseClass, '\\') . 
     {
         return [
 <?php foreach ($labels as $name => $label): ?>
-            <?= "'$name' => " . $generator->generateString($label) . ",\n" ?>
+            <?= "'$name' => " . $generator->generateString($label) . ",\n" ?><?php if (($p=strpos($name, '_path'))!==false) echo "            '".substr($name, 0, $p)."' => " . $generator->generateString(ucfirst(substr($name, 0, $p))) . ",\n"; ?>
 <?php endforeach; ?>
         ];
     }

@@ -330,6 +330,9 @@ class Generator extends \yii\gii\Generator
                     } else {
                         $types['string'][] = $column->name;
                     }
+                    if(($p=strpos($column->name, '_path'))!==false) {
+                        $types['safe'][] = substr($column->name, 0, $p);
+                    }
             }
         }
         $rules = [];

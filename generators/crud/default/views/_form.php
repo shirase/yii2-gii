@@ -35,6 +35,7 @@ use yii\helpers\ArrayHelper;
         echo "    <?= " . $generator->generateActiveField($attribute) . " ?>\n\n";
     }
 } ?>
+<?= $generator->generateTransliterableFields() ?>
 <?php foreach ($generator->getManyRelations() as $attribute => $relation) {
     echo "    <?= \$form->field(\$model, '$attribute')->widget(kartik\\select2\\Select2::className(), ['options'=>['multiple'=>true], 'data'=>ArrayHelper::map({$relation->modelClass}::find()->all(), 'id', 'name')]) ?>\n\n";
 } ?>

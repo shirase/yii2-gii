@@ -129,6 +129,14 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
     {
         $model = new <?= $modelClass ?>();
 
+<?php if ($generator->getIsModelTranslateable()): ?>
+        if ($data = Yii::$app->request->post($model->translate()->formName())) {
+            foreach ($data as $language => $attributes) {
+                $model->translate($language)->setAttributes($attributes);
+            }
+        }
+
+<?php endif; ?>
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['index', 'returned'=>true]);
         } else {
@@ -148,6 +156,14 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
     {
         $model = $this->findModel(<?= $actionParams ?>);
 
+<?php if ($generator->getIsModelTranslateable()): ?>
+        if ($data = Yii::$app->request->post($model->translate()->formName())) {
+            foreach ($data as $language => $attributes) {
+                $model->translate($language)->setAttributes($attributes);
+            }
+        }
+
+<?php endif; ?>
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['index', 'returned'=>true]);
         } else {

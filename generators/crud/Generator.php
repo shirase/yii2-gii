@@ -806,4 +806,56 @@ class Generator extends \yii\gii\Generator
         }
         return $key;
     }
+
+    public function getIsModelTranslateable() {
+        /**
+         * @var ActiveRecord $model
+         */
+        $model = new $this->modelClass;
+        if ($model->behaviors) {
+            foreach ($model->behaviors as $behavior) {
+                if ($behavior instanceof \creocoder\translateable\TranslateableBehavior) {
+                    return $behavior;
+                }
+            }
+        }
+        return false;
+    }
+
+    public function generateTransliterableFields() {
+        /**
+         * @var \creocoder\translateable\TranslateableBehavior $behavior
+         */
+        if ($behavior = $this->getIsModelTranslateable()) {
+            foreach ($behavior->translationAttributes as $attrName) {
+                return <<<PHP
+    <?php
+    foreach (\common\components\helpers\Translation::getAvailableLocales() as \$lang) {
+        echo \$form->field(\$model->translate(\$lang), "[\$lang]{$attrName}")->textInput(['maxlength' => true]);
+    }
+    ?>
+
+
+PHP;
+            }
+        }
+    }
+
+    public function generateTransliterableColumns() {
+        /**
+         * @var \creocoder\translateable\TranslateableBehavior $behavior
+         */
+        if ($behavior = $this->getIsModelTranslateable()) {
+            foreach ($behavior->translationAttributes as $attrName) {
+                return <<<PHP
+        \yii\helpers\ArrayHelper::getColumn(\common\components\helpers\Translation::getAvailableLocales(), function(\$lang) {
+            return ['attribute'=>'translations.name', 'label'=>Yii::t('backend', 'Name {lang}', ['lang'=>\$lang]), 'value'=>function(\$model) use(\$lang) {
+                return \$model->translate(\$lang)->{$attrName};
+            }];
+        }),
+
+PHP;
+            }
+        }
+    }
 }

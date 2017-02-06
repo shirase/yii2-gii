@@ -91,7 +91,7 @@ if (($tableSchema = $generator->getTableSchema()) === false) {
                         return Url::toRoute($params+$this->context->actionParams);
                     }
             ],
-        ],
+        ]
 <?php if ($trColumns) echo "        )\n"; ?>
     ]); ?>
 <?= $generator->enablePjax ? "    <?php Pjax::end(); ?>\n" : '' ?>

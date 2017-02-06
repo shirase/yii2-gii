@@ -38,7 +38,7 @@ class Generator extends \yii\gii\Generator
     public $indexWidgetType = 'grid';
     public $searchModelClass = '';
     public $enableI18N = true;
-    public $messageCategory = 'app';
+    public $messageCategory = 'backend';
 
     /**
      * @var boolean whether to wrap the `GridView` or `ListView` widget with the `yii\widgets\Pjax` widget
@@ -178,6 +178,9 @@ class Generator extends \yii\gii\Generator
         $templatePath = $this->getTemplatePath() . '/views';
         foreach (scandir($templatePath) as $file) {
             if (empty($this->searchModelClass) && $file === '_search.php') {
+                continue;
+            }
+            if ($file === '_item.php' && $this->indexWidgetType != 'list') {
                 continue;
             }
             if (is_file($templatePath . '/' . $file) && pathinfo($file, PATHINFO_EXTENSION) === 'php') {

@@ -96,14 +96,15 @@ if (($tableSchema = $generator->getTableSchema()) === false) {
     ]); ?>
 <?= $generator->enablePjax ? "    <?php Pjax::end(); ?>\n" : '' ?>
 <?php else: ?>
+    <?= '<?php' ?> \shirase\grid\sortable\Sortable::begin(['id'=>'<?= Inflector::camel2id(StringHelper::basename($generator->modelClass)) ?>-index-sortable', 'dataProvider'=>$dataProvider, 'sortItemsSelector'=>'.item']); ?>
 <?= $generator->enablePjax ? "    <?php Pjax::begin(); ?>\n" : '' ?>
     <?= "<?= " ?>ListView::widget([
         'dataProvider' => $dataProvider,
-        'itemOptions' => ['class' => 'item'],
-        'itemView' => function ($model, $key, $index, $widget) {
-            return Html::a(Html::encode($model-><?= $nameAttribute ?>), ['view', <?= $urlParams ?>]);
-        },
+        'layout' => '<div class="row">{items}</div>{pager}',
+        'itemOptions' => ['class' => 'item col-md-3'],
+        'itemView' => '_item',
     ]) ?>
 <?= $generator->enablePjax ? "    <?php Pjax::end(); ?>\n" : '' ?>
+    <?= '<?php' ?> \shirase\grid\sortable\Sortable::end() ?>
 <?php endif; ?>
 </div>

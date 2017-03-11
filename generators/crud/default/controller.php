@@ -66,13 +66,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 
     public function actions()
     {
-        return ArrayHelper::merge(parent::actions(), [
-            'edit' => [
-                'class' => EditableColumnAction::className(),
-                'modelClass' => <?= $modelClass ?>::className(),
-                'showModelErrors' => true,
-            ]
-        ]);
+        return ArrayHelper::merge(parent::actions(), []);
     }
 
     /**
@@ -165,6 +159,10 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 
 <?php endif; ?>
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            if (isset($_POST['hasEditable'])) {
+                \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+                return ['output'=>'', 'message'=>''];
+            }
             return $this->redirect(['index', 'returned'=>true]);
         } else {
             return $this->render('update', [

@@ -43,6 +43,7 @@ use yii\helpers\Json;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 use kartik\grid\EditableColumnAction;
+use shirase\yii2\helpers\MultiModel;
 
 /**
  * <?= $controllerClass ?> implements the CRUD actions for <?= $modelClass ?> model.
@@ -123,6 +124,10 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
     {
         $model = new <?= $modelClass ?>();
 
+        $models = new MultiModel([
+            $model,
+        ]);
+
 <?php if ($generator->getIsModelTranslateable()): ?>
         if ($data = Yii::$app->request->post($model->translate()->formName())) {
             foreach ($data as $language => $attributes) {
@@ -131,7 +136,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
         }
 
 <?php endif; ?>
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($models->load(Yii::$app->request->post()) && $models->save()) {
             return $this->redirect(['index', 'returned'=>true]);
         } else {
             return $this->render('create', [
@@ -150,6 +155,10 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
     {
         $model = $this->findModel(<?= $actionParams ?>);
 
+        $models = new MultiModel([
+            $model,
+        ]);
+
 <?php if ($generator->getIsModelTranslateable()): ?>
         if ($data = Yii::$app->request->post($model->translate()->formName())) {
             foreach ($data as $language => $attributes) {
@@ -158,17 +167,25 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
         }
 
 <?php endif; ?>
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            if (isset($_POST['hasEditable'])) {
+        if ($models->load(Yii::$app->request->post(), true)) {
+            $valid = $model->save();
+
+            if (Yii::$app->request->post('hasEditable')) {
                 \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+                if (!$valid)
+                    return ['output'=>'', 'message'=>reset($models->getFirstErrors())];
+
                 return ['output'=>'', 'message'=>''];
             }
-            return $this->redirect(['index', 'returned'=>true]);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
+
+            if ($valid)
+                return $this->redirect(['index', 'returned'=>true]);
         }
+
+        return $this->render('update', [
+            'model' => $model,
+        ]);
     }
 
     /**

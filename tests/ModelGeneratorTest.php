@@ -223,7 +223,7 @@ class ModelGeneratorTest extends GiiTestCase
         $generator->queryNs = 'app\models';
 
         $files = $generator->generate();
-        $this->assertEquals(1, count($files));
+        $this->assertEquals(2, count($files));
         $this->assertEquals($fileName, basename($files[0]->path));
 
         $code = $files[0]->content;

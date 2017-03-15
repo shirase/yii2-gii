@@ -139,6 +139,9 @@ class ModelGeneratorTest extends GiiTestCase
         $generator->generateRelationsFromCurrentSchema = false;
         $generator->tableName = $tableName;
 
+        $generator->baseClass = 'yii\db\ActiveRecord';
+        $generator->queryBaseClass = 'yii\db\ActiveQuery';
+
         $files = $generator->generate();
         $this->assertEquals(1, count($files));
         $this->assertEquals($fileName, basename($files[0]->path));
@@ -202,6 +205,9 @@ class ModelGeneratorTest extends GiiTestCase
         $generator = new ModelGenerator();
         $generator->template = 'default';
         $generator->tableName = $tableName;
+
+        $generator->baseClass = 'yii\db\ActiveRecord';
+        $generator->queryBaseClass = 'yii\db\ActiveQuery';
 
         $files = $generator->generate();
         $this->assertEquals(1, count($files));

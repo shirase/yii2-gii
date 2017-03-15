@@ -23,7 +23,7 @@ use yii\web\Controller;
  * @property string $controllerID The controller ID (without the module ID prefix). This property is
  * read-only.
  * @property array $searchAttributes Searchable attributes. This property is read-only.
- * @property boolean|\yii\db\TableSchema $tableSchema This property is read-only.
+ * @property bool|\yii\db\TableSchema $tableSchema This property is read-only.
  * @property string $viewPath The controller view path. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -41,7 +41,7 @@ class Generator extends \yii\gii\Generator
     public $messageCategory = 'backend';
 
     /**
-     * @var boolean whether to wrap the `GridView` or `ListView` widget with the `yii\widgets\Pjax` widget
+     * @var bool whether to wrap the `GridView` or `ListView` widget with the `yii\widgets\Pjax` widget
      * @since 2.0.5
      */
     public $enablePjax = true;
@@ -485,7 +485,8 @@ class Generator extends \yii\gii\Generator
                     $likeConditions[] = "->andFilterDateRange('{$column}', \$this->{$column})";
                     break;
                 default:
-                    $likeConditions[] = "->andFilterWhere(['like', '{$column}', \$this->{$column}])";
+                    $likeKeyword = $this->getClassDbDriverName() === 'pgsql' ? 'ilike' : 'like';
+                    $likeConditions[] = "->andFilterWhere(['{$likeKeyword}', '{$column}', \$this->{$column}])";                    
                     break;
             }
         }
@@ -579,7 +580,7 @@ class Generator extends \yii\gii\Generator
 
     /**
      * Returns table schema for current model class or false if it is not an active record
-     * @return boolean|\yii\db\TableSchema
+     * @return bool|\yii\db\TableSchema
      */
     public function getTableSchema()
     {
@@ -607,6 +608,17 @@ class Generator extends \yii\gii\Generator
 
             return $model->attributes();
         }
+    }
+
+    /**
+     * @return string driver name of modelClass db connection.
+     * @since 2.0.6
+     */
+    protected function getClassDbDriverName()
+    {
+        /* @var $class ActiveRecord */
+        $class = $this->modelClass;
+        return $class::getDb()->driverName;
     }
 
     protected $_relations;

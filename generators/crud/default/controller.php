@@ -137,6 +137,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 
 <?php endif; ?>
         if ($models->load(Yii::$app->request->post()) && $models->save()) {
+            Yii::$app->session->setFlash('script', '$(document).trigger("action.Create", '.Json::encode(['class'=>$model::className()]+$model->attributes).');');
             return $this->redirect(['index', 'returned'=>true]);
         } else {
             return $this->render('create', [
@@ -179,8 +180,10 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
                 return ['output'=>'', 'message'=>''];
             }
 
-            if ($valid)
+            if ($valid) {
+                Yii::$app->session->setFlash('script', '$(document).trigger("action.Update", '.Json::encode(['class'=>$model::className()]+$model->attributes).');');
                 return $this->redirect(['index', 'returned'=>true]);
+            }
         }
 
         return $this->render('update', [
@@ -216,7 +219,9 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
             }
             return;
         } else {
-            $this->findModel($id)->delete();
+            $model = $this->findModel($id);
+            Yii::$app->session->setFlash('script', '$(document).trigger("action.Delete", '.Json::encode(['class'=>$model::className()]+$model->attributes).');');
+            $model->delete();
             $this->redirect(['index', 'returned'=>true]);
         }
     }

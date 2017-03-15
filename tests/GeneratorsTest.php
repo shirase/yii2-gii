@@ -63,8 +63,8 @@ class GeneratorsTest extends GiiTestCase
         $files = $generator->generate();
         $modelCode = $files[0]->content;
 
-        $this->assertTrue(strpos($modelCode, "'id' => 'ID'") !== false, "ID label should be there:\n" . $modelCode);
-        $this->assertTrue(strpos($modelCode, "'description' => 'Description',") !== false, "Description label should be there:\n" . $modelCode);
+        $this->assertTrue(strpos($modelCode, "'id' => Yii::t('common', 'ID')") !== false, "ID label should be there:\n" . $modelCode);
+        $this->assertTrue(strpos($modelCode, "'description' => Yii::t('common', 'Description'),") !== false, "Description label should be there:\n" . $modelCode);
     }
 
     public function testModuleGenerator()
@@ -101,6 +101,8 @@ class GeneratorsTest extends GiiTestCase
         $generator->template = 'default';
         $generator->modelClass = 'yiiunit\extensions\gii\Profile';
         $generator->controllerClass = 'app\TestController';
+
+        $generator->baseControllerClass = 'yii\web\Controller';
 
         $valid = $generator->validate();
         $this->assertTrue($valid, 'Validation failed: ' . print_r($generator->getErrors(), true));

@@ -17,6 +17,7 @@ class ModelGeneratorTest extends GiiTestCase
 
         $generator->baseClass = 'yii\db\ActiveRecord';
         $generator->queryBaseClass = 'yii\db\ActiveQuery';
+        $generator->ns = 'app\models';
 
         $generator->queryNs = 'application\models';
 

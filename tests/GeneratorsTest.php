@@ -52,6 +52,11 @@ class GeneratorsTest extends GiiTestCase
         $generator->tableName = 'profile';
         $generator->modelClass = 'Profile';
 
+        $generator->baseClass = 'yii\db\ActiveRecord';
+        $generator->queryBaseClass = 'yii\db\ActiveQuery';
+        $generator->ns = 'app\models';
+        $generator->queryNs = 'app\models';
+
         $valid = $generator->validate();
         $this->assertTrue($valid, 'Validation failed: ' . print_r($generator->getErrors(), true));
 

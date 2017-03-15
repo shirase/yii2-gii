@@ -22,6 +22,7 @@ class SchemaTest extends GiiTestCase
         $generator->baseClass = 'yii\db\ActiveRecord';
         $generator->queryBaseClass = 'yii\db\ActiveQuery';
         $generator->ns = 'app\models';
+        $generator->queryNs = 'app\models';
 
         $files = $generator->generate();
 
@@ -77,6 +78,7 @@ class SchemaTest extends GiiTestCase
         $generator->baseClass = 'yii\db\ActiveRecord';
         $generator->queryBaseClass = 'yii\db\ActiveQuery';
         $generator->ns = 'app\models';
+        $generator->queryNs = 'app\models';
 
         $files = $generator->generate();
         $this->assertEquals($filesCount, count($files));

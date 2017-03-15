@@ -31,16 +31,24 @@ class ModelGeneratorTest extends GiiTestCase
         $this->assertTrue($valid, 'Validation failed: ' . print_r($generator->getErrors(), true));
 
         $files = $generator->generate();
-        $this->assertEquals(8, count($files));
+        $this->assertEquals(16, count($files));
         $expectedNames = [
             'Attribute.php',
+            'AttributeQuery.php',
             'Category.php',
+            'CategoryQuery.php',
             'CategoryPhoto.php',
+            'CategoryPhotoQuery.php',
             'Customer.php',
+            'CustomerQuery.php',
             'Product.php',
+            'ProductQuery.php',
             'ProductLanguage.php',
+            'ProductLanguageQuery.php',
             'Profile.php',
+            'ProfileQuery.php',
             'Supplier.php',
+            'SupplierQuery.php',
         ];
         $fileNames = array_map(function ($f) {
             return basename($f->path);

@@ -101,6 +101,7 @@ class GeneratorsTest extends GiiTestCase
         $generator->template = 'default';
         $generator->modelClass = 'yiiunit\extensions\gii\Profile';
         $generator->controllerClass = 'app\TestController';
+        $generator->viewPath = '@app/views';
 
         $generator->baseControllerClass = 'yii\web\Controller';
 

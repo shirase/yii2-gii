@@ -19,6 +19,10 @@ class SchemaTest extends GiiTestCase
         $generator->tableName = 'schema1.*';
         $generator->generateRelationsFromCurrentSchema = false;
 
+        $generator->baseClass = 'yii\db\ActiveRecord';
+        $generator->queryBaseClass = 'yii\db\ActiveQuery';
+        $generator->ns = 'app\models';
+
         $files = $generator->generate();
 
         if (version_compare(str_replace('-dev', '', Yii::getVersion()), '2.0.4', '<')) {
@@ -69,6 +73,10 @@ class SchemaTest extends GiiTestCase
         $generator->template = $template;
         $generator->tableName = $tableName;
         $generator->generateRelationsFromCurrentSchema = false;
+
+        $generator->baseClass = 'yii\db\ActiveRecord';
+        $generator->queryBaseClass = 'yii\db\ActiveQuery';
+        $generator->ns = 'app\models';
 
         $files = $generator->generate();
         $this->assertEquals($filesCount, count($files));

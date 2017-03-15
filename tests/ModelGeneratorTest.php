@@ -218,6 +218,7 @@ class ModelGeneratorTest extends GiiTestCase
 
         $generator->baseClass = 'yii\db\ActiveRecord';
         $generator->queryBaseClass = 'yii\db\ActiveQuery';
+        $generator->ns = 'app\models';
 
         $files = $generator->generate();
         $this->assertEquals(1, count($files));

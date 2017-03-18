@@ -6,10 +6,6 @@ use yii\di\Container;
 use yii\helpers\ArrayHelper;
 use Yii;
 
-if (!class_exists('PHPUnit_Framework_TestCase')) {
-    class PHPUnit_Framework_TestCase extends \PHPUnit\Framework\TestCase {}
-}
-
 /**
  * This is the base class for all yii framework unit tests.
  */

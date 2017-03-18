@@ -13,3 +13,7 @@ require_once(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
 
 Yii::setAlias('@yiiunit/extensions/gii', __DIR__);
 Yii::setAlias('@yii/gii', dirname(__DIR__));
+
+if (!class_exists('PHPUnit_Framework_TestCase')) {
+    class PHPUnit_Framework_TestCase extends \PHPUnit\Framework\TestCase {}
+}

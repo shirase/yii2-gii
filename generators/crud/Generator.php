@@ -14,6 +14,7 @@ use yii\db\Schema;
 use yii\gii\CodeFile;
 use yii\helpers\Inflector;
 use yii\helpers\VarDumper;
+use yii\validators\StringValidator;
 use yii\web\Controller;
 
 /**
@@ -245,7 +246,15 @@ class Generator extends \yii\gii\Generator
         if (($p=strpos($column->name, '_path'))!==false) {
             return "\$form->field(\$model, '".substr($attribute, 0, $p)."')->widget(shirase55\\filekit\\widget\\Upload::className())";
         } elseif (isset($relations[$column->name])) {
-            return "\$form->field(\$model, '$attribute')->widget(kartik\\select2\\Select2::className(), ['data'=>[''=>'-']+ArrayHelper::map({$relations[$column->name]->modelClass}::find()->all(), 'id', 'name')])";
+            /** @var ActiveRecord $relationModel */
+            $relationModel = new $relations[$column->name]->modelClass;
+            $nameField = $relationModel->primaryKey()[0];
+            foreach ($relationModel->getValidators() as $validator) {
+                if ($validator instanceof StringValidator) {
+                    $nameField = $validator->attributes[0];
+                }
+            }
+            return "\$form->field(\$model, '$attribute')->widget(kartik\\select2\\Select2::className(), ['data'=>[''=>'-']+ArrayHelper::map({$relations[$column->name]->modelClass}::find()->all(), '".$relationModel->primaryKey()[0]."', '{$nameField}')])";
         } elseif ($column->phpType === 'boolean' || $column->size == 1) {
             return "\$form->field(\$model, '$attribute')->dropDownList(['1'=>Yii::t('common', 'Yes'), '0'=>Yii::t('common', 'No')])";
         } elseif ($column->type === 'text') {

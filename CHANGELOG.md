@@ -4,6 +4,7 @@ Yii Framework 2 gii extension Change Log
 2.0.6 under development
 -----------------------
 
+- Bug #255: Fixed error when getting database driver name when db is not an instance of `yii\db\Connection` (MKiselev)
 - Bug #97: Fixed errors and wrong directories created when using backslash in view paths and output paths of CRUD, Controller and Extension generators (lubosdz, samdark)
 - Bug #224: Add default validator with null value for integers when db is PostgreSQL (MKiselev)
 - Enh #223: Use ilike operator when generating search model for PostgreSQL (MKiselev, arogachev)
@@ -24,6 +25,7 @@ Yii Framework 2 gii extension Change Log
 - Bug #179: Fixed indentation and newlines for Pjax widget in crud index view (nkovacs)
 - Bug #186: Fixed incorrect database name exception (zlakomanoff, shirase)
 - Bug #200: Fixed Pjax and Listview with CRUD generator (ariestattoo)
+- Bug #271: Fixed absolute namespace of model class in form generator (CeBe, amin3mej)
 - Enh #131: Allow using table comments for PHPdoc property description (stmswitcher, michaelarnauts)
 - Enh #252: Added meta tag to prevent indexing of debug by search engines in case it's exposed (bashkarev)
 - Enh: `yii\gii\Module::defaultVersion()` implemented to pick up 'yiisoft/yii2-gii' extension version (klimov-paul)

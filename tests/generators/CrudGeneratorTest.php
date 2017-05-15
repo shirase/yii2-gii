@@ -12,6 +12,8 @@ class CrudGeneratorTest extends TestCase
     {
         $g = new Generator();
 
+        $g->modelClass = 'app\models';
+
         $c = new ColumnSchema(['phpType' => 'boolean', 'type' => 'boolean', 'name' => 'is_enabled']);
         $this->assertEquals('boolean', $g->generateColumnFormat($c));
 

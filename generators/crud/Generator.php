@@ -252,6 +252,7 @@ class Generator extends \yii\gii\Generator
             foreach ($relationModel->getValidators() as $validator) {
                 if ($validator instanceof StringValidator) {
                     $nameField = $validator->attributes[0];
+                    break;
                 }
             }
             return "\$form->field(\$model, '$attribute')->widget(kartik\\select2\\Select2::className(), ['data'=>[''=>'-']+ArrayHelper::map({$relations[$column->name]->modelClass}::find()->all(), '".$relationModel->primaryKey()[0]."', '{$nameField}')])";

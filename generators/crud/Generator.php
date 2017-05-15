@@ -327,8 +327,17 @@ class Generator extends \yii\gii\Generator
         $relations = $this->getRelations();
 
         if (isset($relations[$column->name])) {
+            /** @var \yii\db\ActiveRecord $relationModel */
+            $relationModel = new $relations[$column->name]->modelClass;
+            $nameField = $relationModel->primaryKey()[0];
+            foreach ($relationModel->getValidators() as $validator) {
+                if ($validator instanceof \yii\validators\StringValidator) {
+                    $nameField = $validator->attributes[0];
+                    break;
+                }
+            }
             return [
-                '[\'attribute\'=>\''.$column->name.'\', \'value\'=>function($model) {return $model->'.$this->generateRelationName($column->name).'->name;}]'
+                '[\'attribute\'=>\''.$column->name.'\', \'value\'=>function($model) {return $model->'.$this->generateRelationName($column->name).'->'.$nameField.';}]'
             ];
         } elseif($column->name=='lft' || $column->name=='rgt' || $column->name=='depth' || $column->name=='pos' || $column->name=='bpath' || $column->name=='pid'  || $column->name=='created_at' || $column->name=='updated_at' || $column->name=='author_id' || $column->name=='updater_id') {
             return '';

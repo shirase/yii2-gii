@@ -830,6 +830,7 @@ class Generator extends \yii\gii\Generator
         if ($multiple) {
             $key = Inflector::pluralize($key);
         }
+        $key = lcfirst(Inflector::id2camel($key, '_'));
         return $key;
     }
 

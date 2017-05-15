@@ -18,7 +18,7 @@ class CrudGeneratorTest extends TestCase
         $c = new ColumnSchema(['phpType' => 'string', 'type' => 'text', 'name' => 'description']);
         $this->assertEquals('ntext', $g->generateColumnFormat($c));
 
-        $c = new ColumnSchema(['phpType' => 'string', 'type' => 'DATETIME', 'name' => 'create_time']);
+        $c = new ColumnSchema(['phpType' => 'string', 'type' => 'datetime', 'name' => 'create_time']);
         $this->assertEquals('datetime', $g->generateColumnFormat($c));
 
         $c = new ColumnSchema(['phpType' => 'string', 'type' => 'string', 'name' => 'email_address']);

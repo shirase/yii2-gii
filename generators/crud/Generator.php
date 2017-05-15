@@ -370,8 +370,17 @@ class Generator extends \yii\gii\Generator
         $relations = $this->getRelations();
 
         if (isset($relations[$column->name])) {
+            /** @var \yii\db\ActiveRecord $relationModel */
+            $relationModel = new $relations[$column->name]->modelClass;
+            $nameField = $relationModel->primaryKey()[0];
+            foreach ($relationModel->getValidators() as $validator) {
+                if ($validator instanceof \yii\validators\StringValidator) {
+                    $nameField = $validator->attributes[0];
+                    break;
+                }
+            }
             return [
-                '[\'attribute\'=>\''.$column->name.'\', \'value\'=>$model->'.$this->generateRelationName($column->name).'->name]'
+                '[\'attribute\'=>\''.$column->name.'\', \'value\'=>$model->'.$this->generateRelationName($column->name).'->'.$nameField.']'
             ];
         }
 

@@ -55,10 +55,10 @@ if (($tableSchema = $generator->getTableSchema()) === false) {
         }
     }
 } else {
+    $prefix = '';
     foreach ($tableSchema->columns as $column) {
         if($column->isPrimaryKey) continue;
         if($format = $generator->generateColumnFormat($column)) {
-            $prefix = '';
             if (++$count == 10) {
                 $prefix = '//';
             }

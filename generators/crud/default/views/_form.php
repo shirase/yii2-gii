@@ -37,6 +37,15 @@ use yii\helpers\ArrayHelper;
 } ?>
 <?= $generator->generateTransliterableFields() ?>
 <?php foreach ($generator->getManyRelations() as $attribute => $relation) {
+    /** @var \yii\db\ActiveRecord $relationModel */
+    $relationModel = new $relation->modelClass;
+    $nameField = $relationModel->primaryKey()[0];
+    foreach ($relationModel->getValidators() as $validator) {
+        if ($validator instanceof \yii\validators\StringValidator) {
+            $nameField = $validator->attributes[0];
+            break;
+        }
+    }
     echo "    <?= \$form->field(\$model, '$attribute')->widget(kartik\\select2\\Select2::className(), ['options'=>['multiple'=>true], 'data'=>ArrayHelper::map({$relation->modelClass}::find()->all(), 'id', 'name')]) ?>\n\n";
 } ?>
     <div class="form-group">

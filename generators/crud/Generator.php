@@ -722,6 +722,8 @@ class Generator extends \yii\gii\Generator
          * @var $model ActiveRecord
          */
         $modelClass = $this->modelClass;
+        if (!class_exists($modelClass))
+            return [];
         $model = new $modelClass();
         $modelTable = $modelClass::getTableSchema();
         $db = $modelClass::getDb();

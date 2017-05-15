@@ -70,7 +70,6 @@ if (($tableSchema = $generator->getTableSchema()) === false) {
                 echo "            ".$prefix."['class'=>'kartik\grid\BooleanColumn', 'attribute'=>'$column->name'],\n";
             } else {
                 echo "            ".$prefix."['attribute'=>'$column->name'".($format === 'text' ? "" : ", 'format'=>'$format'")."],\n";
-                //echo "            ".$prefix."'" . $column->name . ($format === 'text' ? "" : ":" . $format) . "',\n";
             }
         }
     }

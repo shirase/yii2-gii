@@ -330,7 +330,12 @@ class Generator extends \yii\gii\Generator
                 continue;
             }
             if (!$column->allowNull && $column->defaultValue === null) {
-                $types['required'][] = $column->name;
+                if (($p=strpos($column->name, '_path'))!==false) {
+                    $short = substr($column->name, 0, $p);
+                    $types['required'][] = $short;
+                } else {
+                    $types['required'][] = $column->name;
+                }
             }
             switch ($column->type) {
                 case Schema::TYPE_SMALLINT:

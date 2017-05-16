@@ -491,7 +491,7 @@ class Generator extends \yii\gii\Generator
         $likeConditions = [];
         $hashConditions = [];
         foreach ($columns as $column => $type) {
-            if($column==='lft' || $column==='rgt' || $column==='depth' || $column==='pos' || $column->name=='bpath') {
+            if($column==='lft' || $column==='rgt' || $column==='depth' || $column==='pos' || $column==='bpath') {
                 continue;
             }
 

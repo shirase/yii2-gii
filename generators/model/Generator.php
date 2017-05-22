@@ -1114,7 +1114,7 @@ class Generator extends \yii\gii\Generator
                 echo <<<PHP
     public function get{$s}_url()
     {
-        return Url::image(\$this->{$column->name}, ['w'=>200]);
+        return \common\components\helpers\Url::image(\$this->{$column->name}, ['w'=>200]);
     }
 
 PHP;

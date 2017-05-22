@@ -303,7 +303,16 @@ class Generator extends \yii\gii\Generator
         $column = $tableSchema->columns[$attribute];
         if (strpos($column->name, '_path')!==false) return false;
         if (isset($relations[$column->name])) {
-            return "\$form->field(\$model, '$attribute')->widget(kartik\\select2\\Select2::className(), ['data'=>[''=>'-']+ArrayHelper::map({$relations[$column->name]->modelClass}::find()->all(), 'id', 'name')])";
+            /** @var ActiveRecord $relationModel */
+            $relationModel = new $relations[$column->name]->modelClass;
+            $nameField = $relationModel->primaryKey()[0];
+            foreach ($relationModel->getValidators() as $validator) {
+                if ($validator instanceof StringValidator) {
+                    $nameField = $validator->attributes[0];
+                    break;
+                }
+            }
+            return "\$form->field(\$model, '$attribute')->widget(kartik\\select2\\Select2::className(), ['data'=>[''=>'-']+ArrayHelper::map({$relations[$column->name]->modelClass}::find()->all(), 'id', '{$nameField}')])";
         } elseif ($column->name=='lft' || $column->name=='rgt' || $column->name=='depth' || $column->name=='pos' || $column->name=='bpath' || $column->name=='pid'  || $column->name=='created_at' || $column->name=='updated_at' || $column->name=='author_id' || $column->name=='updater_id') {
             return '';
         } elseif ($column->phpType === 'boolean' || $column->size == 1) {

@@ -20,7 +20,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "replace": {
-        "yiisoft/yii2-gii": "self.version"
+        "yiisoft/yii2-gii": "*"
     },
     "require": {
         "yiisoft/yii2": "~2.0.4",

@@ -183,7 +183,7 @@ class Generator extends \yii\gii\Generator
      */
     public function stickyAttributes()
     {
-        return array_merge(parent::stickyAttributes(), ['ns', 'db', 'baseClass', 'generateRelations', 'generateLabelsFromComments', 'queryNs', 'queryBaseClass']);
+        return array_merge(parent::stickyAttributes(), ['ns', 'db', 'baseClass', 'generateRelations', 'generateLabelsFromComments', 'queryNs', 'queryBaseClass', 'useTablePrefix', 'generateQuery']);
     }
 
     /**
@@ -385,7 +385,8 @@ class Generator extends \yii\gii\Generator
 
         // Unique indexes rules
         try {
-            $uniqueIndexes = $db->getSchema()->findUniqueIndexes($table);
+            $uniqueIndexes = array_merge($db->getSchema()->findUniqueIndexes($table), [$table->primaryKey]);
+            $uniqueIndexes = array_unique($uniqueIndexes, SORT_REGULAR);
             foreach ($uniqueIndexes as $uniqueColumns) {
                 // Avoid validating auto incremental columns
                 if (!$this->isColumnAutoIncremental($table, $uniqueColumns)) {

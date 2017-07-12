@@ -165,6 +165,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
             'form' => ['class' => 'yii\gii\generators\form\Generator'],
             'module' => ['class' => 'yii\gii\generators\module\Generator'],
             'extension' => ['class' => 'yii\gii\generators\extension\Generator'],
+            'page_plugin' => ['class' => 'yii\gii\generators\page_plugin\Generator'],
         ];
     }
 

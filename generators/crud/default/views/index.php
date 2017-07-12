@@ -78,7 +78,7 @@ if (($tableSchema = $generator->getTableSchema()) === false) {
             }
             if(is_array($format)) {
                 foreach($format as $line) {
-                    echo "                ".$prefix.$line.",\n";
+                    echo "                    ".$prefix.$line.",\n";
                 }
             } elseif($format == 'boolean') {
                 echo "                    ".$prefix."['class'=>'kartik\grid\BooleanColumn', 'attribute'=>'$column->name'],\n";

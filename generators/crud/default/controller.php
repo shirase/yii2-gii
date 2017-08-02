@@ -37,6 +37,7 @@ use <?= ltrim($generator->searchModelClass, '\\') . (isset($searchModelAlias) ? 
 use yii\data\ActiveDataProvider;
 <?php endif; ?>
 use <?= ltrim($generator->baseControllerClass, '\\') ?>;
+use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\Json;

@@ -35,7 +35,7 @@ class Generator extends \yii\gii\Generator
     public $modelClass = 'common\models\\';
     public $controllerClass;
     public $viewPath;
-    public $baseControllerClass = 'common\components\web\Controller';
+    public $baseControllerClass = 'common\web\Controller';
     public $indexWidgetType = 'grid';
     public $searchModelClass = '';
     public $enableI18N = true;

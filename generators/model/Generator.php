@@ -1030,11 +1030,11 @@ class Generator extends \yii\gii\Generator
         }
 
         if (isset($columnNames['created_at']) && isset($columnNames['updated_at'])) {
-            $behaviors[] = "            [\n                'class' => \\yii\\behaviors\\TimestampBehavior::className(),\n                'value' => function() {return date(DATE_ISO8601);},\n            ],\n";
+            $behaviors[] = "            [\n                'class' => \\yii\\behaviors\\TimestampBehavior::className(),\n                'value' => function() {return date(DATE_SQL);},\n            ],\n";
         } elseif (isset($columnNames['created_at'])) {
-            $behaviors[] = "            [\n                'class' => \\yii\\behaviors\\TimestampBehavior::className(),\n                'value' => function() {return date(DATE_ISO8601);},\n                'updatedAtAttribute' => false\n            ],\n";
+            $behaviors[] = "            [\n                'class' => \\yii\\behaviors\\TimestampBehavior::className(),\n                'value' => function() {return date(DATE_SQL);},\n                'updatedAtAttribute' => false\n            ],\n";
         } elseif (isset($columnNames['updated_at'])) {
-            $behaviors[] = "            [\n                'class' => \\yii\\behaviors\\TimestampBehavior::className(),\n                'value' => function() {return date(DATE_ISO8601);},\n                'createdAtAttribute' => false\n            ],\n";
+            $behaviors[] = "            [\n                'class' => \\yii\\behaviors\\TimestampBehavior::className(),\n                'value' => function() {return date(DATE_SQL);},\n                'createdAtAttribute' => false\n            ],\n";
         }
 
         if (isset($columnNames['author_id']) && isset($columnNames['updater_id'])) {

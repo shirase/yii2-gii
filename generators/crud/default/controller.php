@@ -140,11 +140,11 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
         if ($models->load(Yii::$app->request->post()) && $models->save()) {
             Yii::$app->session->setFlash('script', '$(document).trigger("action.Create", '.Json::encode(['class'=>$model::className()]+$model->attributes).');');
             return $this->redirect(['index', 'returned'=>true]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
         }
+
+        return $this->render('create', [
+            'model' => $model,
+        ]);
     }
 
     /**
@@ -251,8 +251,8 @@ if (count($pks) === 1) {
 ?>
         if (($model = <?= $modelClass ?>::findOne(<?= $condition ?>)) !== null) {
             return $model;
-        } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
         }
+
+        throw new NotFoundHttpException(<?= $generator->generateString('The requested page does not exist.') ?>);
     }
 }

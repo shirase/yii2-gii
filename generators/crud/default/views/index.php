@@ -33,7 +33,7 @@ $controller->layout = 'common';
     <?= "<?php /* ?>\n" ?>
     <div class="box collapsed-box">
         <div class="box-header">
-            <div class="box-title" onclick="$.AdminLTE.boxWidget.collapse($(this).next().find('button'))" style="cursor: pointer">РџРѕРёСЃРє</div>
+            <div class="box-title" onclick="$.AdminLTE.boxWidget.collapse($(this).next().find('button'))" style="cursor: pointer">Поиск</div>
             <div class="box-tools pull-right"><button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button></div>
         </div>
         <div class="box-body">

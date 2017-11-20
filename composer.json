@@ -41,5 +41,11 @@
             "github-no-api": true
         },
         "asset-pattern-skip-version": "(-build|-patch|-beta|-dev)"
-    }
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ]
 }

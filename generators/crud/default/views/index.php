@@ -53,7 +53,7 @@ $controller->layout = 'common';
 <?php if ($generator->indexWidgetType === 'grid'): ?>
             <?= "<?= " ?>GridView::widget([
                 'id' => '<?= Inflector::camel2id(StringHelper::basename($generator->modelClass)) ?>-grid',
-                <?= $generator->enablePjax ? '\'pjax\' => true,'."\n" : '' ?>
+                <?= $generator->enablePjax ? '\'pjax\' => false,'."\n" : '' ?>
                 'dataProvider' => $dataProvider,
                 <?= (!empty($generator->searchModelClass) ? "//'filterModel' => \$searchModel,\n                " : '') . "'columns' => ".(($trColumns = $generator->generateTransliterableColumns()) ? "array_merge(\n".$trColumns."\n                " : '')."[\n"; ?>
                     ['class' => 'shirase\grid\sortable\SerialColumn'],

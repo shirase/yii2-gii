@@ -138,7 +138,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
 
 <?php endif; ?>
         if ($models->load(Yii::$app->request->post()) && $models->save()) {
-            Yii::$app->session->setFlash('script', '$(document).trigger("action.Create", '.Json::encode(['class'=>$model::className()]+$model->attributes).');');
+            Yii::$app->session->setFlash('script', '$(document).trigger("action.Create", '.Json::encode(['class'=>get_class($model)]+$model->attributes).');');
             return $this->redirect(['index', 'returned'=>true]);
         }
 
@@ -182,7 +182,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
             }
 
             if ($valid) {
-                Yii::$app->session->setFlash('script', '$(document).trigger("action.Update", '.Json::encode(['class'=>$model::className()]+$model->attributes).');');
+                Yii::$app->session->setFlash('script', '$(document).trigger("action.Update", '.Json::encode(['class'=>get_class($model)]+$model->attributes).');');
                 return $this->redirect(['index', 'returned'=>true]);
             }
         }
@@ -221,7 +221,7 @@ class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->bas
             return;
         } else {
             $model = $this->findModel($id);
-            Yii::$app->session->setFlash('script', '$(document).trigger("action.Delete", '.Json::encode(['class'=>$model::className()]+$model->attributes).');');
+            Yii::$app->session->setFlash('script', '$(document).trigger("action.Delete", '.Json::encode(['class'=>get_class($model)]+$model->attributes).');');
             $model->delete();
             if (!Yii::$app->request->isAjax) {
                 return $this->redirect(['index', 'returned'=>true]);

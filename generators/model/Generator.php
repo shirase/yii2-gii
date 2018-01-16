@@ -1045,6 +1045,14 @@ class Generator extends \yii\gii\Generator
             $behaviors[] = "            [\n                'class' => \\yii\\behaviors\\BlameableBehavior::class,\n                'createdByAttribute' => false,\n                'updatedByAttribute' => 'updater_id'\n            ],\n";
         }
 
+        if (isset($columnNames['created_by']) && isset($columnNames['updated_by'])) {
+            $behaviors[] = "            [\n                'class' => \\yii\\behaviors\\BlameableBehavior::class,\n                'createdByAttribute' => 'created_by',\n                'updatedByAttribute' => 'updated_by'\n            ],\n";
+        } elseif (isset($columnNames['created_by'])) {
+            $behaviors[] = "            [\n                'class' => \\yii\\behaviors\\BlameableBehavior::class,\n                'createdByAttribute' => 'created_by',\n                'updatedByAttribute' => false\n            ],\n";
+        } elseif (isset($columnNames['updated_by'])) {
+            $behaviors[] = "            [\n                'class' => \\yii\\behaviors\\BlameableBehavior::class,\n                'createdByAttribute' => false,\n                'updatedByAttribute' => 'updated_by'\n            ],\n";
+        }
+
         $manyManyRelations = [];
         $db = $this->getDbConnection();
         foreach ($this->getSchemaNames() as $schemaName) {

@@ -1026,7 +1026,7 @@ class Generator extends \yii\gii\Generator
         }
 
         if (isset($columnNames['slug'])) {
-            $behaviors[] = "            [\n                'class' => \\yii\\behaviors\\SluggableBehavior::className(),\n                'attribute'=>'".($columnNames['name'] ? 'name' : 'title')."',\n                'immutable' => true,\n            ],\n";
+            $behaviors[] = "            [\n                'class' => \\yii\\behaviors\\SluggableBehavior::className(),\n                'attribute'=>'".($columnNames['name'] ? 'name' : 'title')."',\n                'immutable' => true,\n                'ensureUnique' => true,\n            ],\n";
         }
 
         if (isset($columnNames['created_at']) && isset($columnNames['updated_at'])) {

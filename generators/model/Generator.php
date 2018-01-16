@@ -381,6 +381,12 @@ class Generator extends \yii\gii\Generator
             $rules[] = "[['" . implode("', '", $columns) . "'], 'string', 'max' => $length]";
         }
 
+        foreach ($table->columns as $column) {
+            if ($column->name === 'published_at') {
+                $rules[] = '[[\'published_at\'], \'default\', \'value\' => function () {return date(DATE_SQL);}]';
+            }
+        }
+
         $db = $this->getDbConnection();
 
         // Unique indexes rules

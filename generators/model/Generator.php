@@ -326,7 +326,7 @@ class Generator extends \yii\gii\Generator
             if ($column->autoIncrement) {
                 continue;
             }
-            if($column->name==='lft' || $column->name==='rgt' || $column->name==='depth' || $column->name==='pos' || $column->name=='bpath' || $column->name=='pid' || $column->name=='created_at' || $column->name=='updated_at' || $column->name=='author_id' || $column->name=='updater_id') {
+            if($column->name==='lft' || $column->name==='rgt' || $column->name==='depth' || $column->name==='pos' || $column->name=='bpath' || $column->name=='pid' || $column->name=='created_at' || $column->name=='updated_at' || $column->name=='author_id' || $column->name=='updater_id' || $column->name=='created_by' || $column->name=='updated_by') {
                 continue;
             }
             if (!$column->allowNull && $column->defaultValue === null) {

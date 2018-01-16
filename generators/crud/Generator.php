@@ -75,8 +75,8 @@ class Generator extends \yii\gii\Generator
             [['modelClass', 'controllerClass', 'viewPath', 'baseControllerClass', 'indexWidgetType'], 'required'],
             [['searchModelClass'], 'compare', 'compareAttribute' => 'modelClass', 'operator' => '!==', 'message' => 'Search Model Class must not be equal to Model Class.'],
             [['modelClass', 'controllerClass', 'baseControllerClass', 'searchModelClass'], 'match', 'pattern' => '/^[\w\\\\]*$/', 'message' => 'Only word characters and backslashes are allowed.'],
-            [['modelClass'], 'validateClass', 'params' => ['extends' => BaseActiveRecord::className()]],
-            [['baseControllerClass'], 'validateClass', 'params' => ['extends' => Controller::className()]],
+            [['modelClass'], 'validateClass', 'params' => ['extends' => BaseActiveRecord::class]],
+            [['baseControllerClass'], 'validateClass', 'params' => ['extends' => Controller::class]],
             [['controllerClass'], 'match', 'pattern' => '/Controller$/', 'message' => 'Controller class name must be suffixed with "Controller".'],
             [['controllerClass'], 'match', 'pattern' => '/(^|\\\\)[A-Z][^\\\\]+Controller$/', 'message' => 'Controller class name must start with an uppercase letter.'],
             [['controllerClass', 'searchModelClass'], 'validateNewClass'],
@@ -244,7 +244,7 @@ class Generator extends \yii\gii\Generator
         }
         $column = $tableSchema->columns[$attribute];
         if (($p=strpos($column->name, '_path'))!==false) {
-            return "\$form->field(\$model, '".substr($attribute, 0, $p)."')->widget(shirase55\\filekit\\widget\\Upload::className())";
+            return "\$form->field(\$model, '".substr($attribute, 0, $p)."')->widget(shirase55\\filekit\\widget\\Upload::class)";
         } elseif (isset($relations[$column->name])) {
             /** @var ActiveRecord $relationModel */
             $relationModel = new $relations[$column->name]->modelClass;
@@ -255,7 +255,7 @@ class Generator extends \yii\gii\Generator
                     break;
                 }
             }
-            return "\$form->field(\$model, '$attribute')->widget(kartik\\select2\\Select2::className(), ['data'=>[''=>'-']+ArrayHelper::map({$relations[$column->name]->modelClass}::find()->all(), '".$relationModel->primaryKey()[0]."', '{$nameField}')])";
+            return "\$form->field(\$model, '$attribute')->widget(kartik\\select2\\Select2::class, ['data'=>[''=>'-']+ArrayHelper::map({$relations[$column->name]->modelClass}::find()->all(), '".$relationModel->primaryKey()[0]."', '{$nameField}')])";
         } elseif ($column->phpType === 'boolean' || $column->size == 1) {
             return "\$form->field(\$model, '$attribute')->dropDownList(['1'=>Yii::t('common', 'Yes'), '0'=>Yii::t('common', 'No')])";
         } elseif ($column->type === 'text') {
@@ -312,7 +312,7 @@ class Generator extends \yii\gii\Generator
                     break;
                 }
             }
-            return "\$form->field(\$model, '$attribute')->widget(kartik\\select2\\Select2::className(), ['data'=>[''=>'-']+ArrayHelper::map({$relations[$column->name]->modelClass}::find()->all(), 'id', '{$nameField}')])";
+            return "\$form->field(\$model, '$attribute')->widget(kartik\\select2\\Select2::class, ['data'=>[''=>'-']+ArrayHelper::map({$relations[$column->name]->modelClass}::find()->all(), 'id', '{$nameField}')])";
         } elseif ($column->name=='lft' || $column->name=='rgt' || $column->name=='depth' || $column->name=='pos' || $column->name=='bpath' || $column->name=='pid'  || $column->name=='created_at' || $column->name=='updated_at' || $column->name=='author_id' || $column->name=='updater_id') {
             return '';
         } elseif ($column->phpType === 'boolean' || $column->size == 1) {

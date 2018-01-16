@@ -81,8 +81,8 @@ class Generator extends \yii\gii\Generator
             [['ns', 'queryNs'], 'validateNamespace'],
             [['tableName'], 'validateTableName'],
             [['modelClass'], 'validateModelClass', 'skipOnEmpty' => false],
-            [['baseClass'], 'validateClass', 'params' => ['extends' => ActiveRecord::className()]],
-            [['queryBaseClass'], 'validateClass', 'params' => ['extends' => ActiveQuery::className()]],
+            [['baseClass'], 'validateClass', 'params' => ['extends' => ActiveRecord::class]],
+            [['queryBaseClass'], 'validateClass', 'params' => ['extends' => ActiveQuery::class]],
             [['generateRelations'], 'in', 'range' => [self::RELATIONS_NONE, self::RELATIONS_ALL, self::RELATIONS_ALL_INVERSE]],
             [['generateLabelsFromComments', 'useTablePrefix', 'useSchemaName', 'generateQuery', 'generateRelationsFromCurrentSchema'], 'boolean'],
             [['enableI18N'], 'boolean'],
@@ -420,7 +420,7 @@ class Generator extends \yii\gii\Generator
                 $targetAttributes[] = "'$key' => '$value'";
             }
             $targetAttributes = implode(', ', $targetAttributes);
-            $rules[] = "[['$attributes'], 'exist', 'skipOnError' => true, 'targetClass' => $refClassName::className(), 'targetAttribute' => [$targetAttributes]]";
+            $rules[] = "[['$attributes'], 'exist', 'skipOnError' => true, 'targetClass' => $refClassName::class, 'targetAttribute' => [$targetAttributes]]";
         }
 
         if ($langTableSchema = $this->getLangTableSchema($table)) {
@@ -484,7 +484,7 @@ class Generator extends \yii\gii\Generator
             $viaLink = $this->generateRelationLink($firstKey);
             $relationName = $this->generateRelationName($relations, $table0Schema, key($secondKey), true);
             $relations[$table0Schema->fullName][$relationName] = [
-                "return \$this->hasMany($className1::className(), $link)->viaTable('"
+                "return \$this->hasMany($className1::class, $link)->viaTable('"
                 . $this->generateTableName($table->name) . "', $viaLink);",
                 $className1,
                 true,
@@ -494,7 +494,7 @@ class Generator extends \yii\gii\Generator
             $viaLink = $this->generateRelationLink($secondKey);
             $relationName = $this->generateRelationName($relations, $table1Schema, key($firstKey), true);
             $relations[$table1Schema->fullName][$relationName] = [
-                "return \$this->hasMany($className0::className(), $link)->viaTable('"
+                "return \$this->hasMany($className0::class, $link)->viaTable('"
                 . $this->generateTableName($table->name) . "', $viaLink);",
                 $className0,
                 true,
@@ -568,7 +568,7 @@ class Generator extends \yii\gii\Generator
                     $link = $this->generateRelationLink(array_flip($refs));
                     $relationName = $this->generateRelationName($relations, $table, $fks[0], false);
                     $relations[$table->fullName][$relationName] = [
-                        "return \$this->hasOne($refClassName::className(), $link);",
+                        "return \$this->hasOne($refClassName::class, $link);",
                         $refClassName,
                         false,
                     ];
@@ -581,7 +581,7 @@ class Generator extends \yii\gii\Generator
                         $relationName = 'Translations';
                     }
                     $relations[$refTableSchema->fullName][$relationName] = [
-                        "return \$this->" . ($hasMany ? 'hasMany' : 'hasOne') . "($className::className(), $link);",
+                        "return \$this->" . ($hasMany ? 'hasMany' : 'hasOne') . "($className::class, $link);",
                         $className,
                         $hasMany,
                     ];
@@ -1002,7 +1002,7 @@ class Generator extends \yii\gii\Generator
             if (($p=strpos($name, '_path'))!==false) {
                 $short = substr($name, 0, $p);
                 $behavior = "            [\n";
-                $behavior .= "                'class' => \\shirase55\\filekit\\behaviors\\UploadBehavior::className(),\n";
+                $behavior .= "                'class' => \\shirase55\\filekit\\behaviors\\UploadBehavior::class,\n";
                 $behavior .= "                'attribute' => '$short',\n";
                 $behavior .= "                'pathAttribute' => '$name',\n";
                 $behavior .= "                'urlAttribute' => '{$short}_url',\n";
@@ -1015,34 +1015,34 @@ class Generator extends \yii\gii\Generator
         if ($langTableSchema) {
             $attributes = Json::encode($this->getLangAttributes($langTableSchema, $tableSchema));
             $behavior = "            [\n";
-            $behavior .= "                'class' => \\creocoder\\translateable\\TranslateableBehavior::className(),\n";
+            $behavior .= "                'class' => \\creocoder\\translateable\\TranslateableBehavior::class,\n";
             $behavior .= "                'translationAttributes' => $attributes,\n";
             $behavior .= "            ],\n";
             $behaviors[] = $behavior;
         }
 
         if (isset($columnNames['pos'])) {
-            $behaviors[] = "            [\n                'class' => \\shirase\\tree\\TreeBehavior::className(),\n            ],\n";
+            $behaviors[] = "            [\n                'class' => \\shirase\\tree\\TreeBehavior::class,\n            ],\n";
         }
 
         if (isset($columnNames['slug'])) {
-            $behaviors[] = "            [\n                'class' => \\yii\\behaviors\\SluggableBehavior::className(),\n                'attribute'=>'".($columnNames['name'] ? 'name' : 'title')."',\n                'immutable' => true,\n                'ensureUnique' => true,\n            ],\n";
+            $behaviors[] = "            [\n                'class' => \\yii\\behaviors\\SluggableBehavior::class,\n                'attribute'=>'".($columnNames['name'] ? 'name' : 'title')."',\n                'immutable' => true,\n                'ensureUnique' => true,\n            ],\n";
         }
 
         if (isset($columnNames['created_at']) && isset($columnNames['updated_at'])) {
-            $behaviors[] = "            [\n                'class' => \\yii\\behaviors\\TimestampBehavior::className(),\n                'value' => function() {return date(DATE_SQL);},\n            ],\n";
+            $behaviors[] = "            [\n                'class' => \\yii\\behaviors\\TimestampBehavior::class,\n                'value' => function() {return date(DATE_SQL);},\n            ],\n";
         } elseif (isset($columnNames['created_at'])) {
-            $behaviors[] = "            [\n                'class' => \\yii\\behaviors\\TimestampBehavior::className(),\n                'value' => function() {return date(DATE_SQL);},\n                'updatedAtAttribute' => false\n            ],\n";
+            $behaviors[] = "            [\n                'class' => \\yii\\behaviors\\TimestampBehavior::class,\n                'value' => function() {return date(DATE_SQL);},\n                'updatedAtAttribute' => false\n            ],\n";
         } elseif (isset($columnNames['updated_at'])) {
-            $behaviors[] = "            [\n                'class' => \\yii\\behaviors\\TimestampBehavior::className(),\n                'value' => function() {return date(DATE_SQL);},\n                'createdAtAttribute' => false\n            ],\n";
+            $behaviors[] = "            [\n                'class' => \\yii\\behaviors\\TimestampBehavior::class,\n                'value' => function() {return date(DATE_SQL);},\n                'createdAtAttribute' => false\n            ],\n";
         }
 
         if (isset($columnNames['author_id']) && isset($columnNames['updater_id'])) {
-            $behaviors[] = "            [\n                'class' => \\yii\\behaviors\\BlameableBehavior::className(),\n                'createdByAttribute' => 'author_id',\n                'updatedByAttribute' => 'updater_id'\n            ],\n";
+            $behaviors[] = "            [\n                'class' => \\yii\\behaviors\\BlameableBehavior::class,\n                'createdByAttribute' => 'author_id',\n                'updatedByAttribute' => 'updater_id'\n            ],\n";
         } elseif (isset($columnNames['author_id'])) {
-            $behaviors[] = "            [\n                'class' => \\yii\\behaviors\\BlameableBehavior::className(),\n                'createdByAttribute' => 'author_id',\n                'updatedByAttribute' => false\n            ],\n";
+            $behaviors[] = "            [\n                'class' => \\yii\\behaviors\\BlameableBehavior::class,\n                'createdByAttribute' => 'author_id',\n                'updatedByAttribute' => false\n            ],\n";
         } elseif (isset($columnNames['updater_id'])) {
-            $behaviors[] = "            [\n                'class' => \\yii\\behaviors\\BlameableBehavior::className(),\n                'createdByAttribute' => false,\n                'updatedByAttribute' => 'updater_id'\n            ],\n";
+            $behaviors[] = "            [\n                'class' => \\yii\\behaviors\\BlameableBehavior::class,\n                'createdByAttribute' => false,\n                'updatedByAttribute' => 'updater_id'\n            ],\n";
         }
 
         $manyManyRelations = [];
@@ -1066,7 +1066,7 @@ class Generator extends \yii\gii\Generator
         }
 
         if ($manyManyRelations) {
-            $behaviors[] = "            [\n                'class' => \\voskobovich\\behaviors\\ManyToManyBehavior::className(),\n                'relations' => [".implode('', $manyManyRelations)."\n                ]\n            ],\n";
+            $behaviors[] = "            [\n                'class' => \\voskobovich\\behaviors\\ManyToManyBehavior::class,\n                'relations' => [".implode('', $manyManyRelations)."\n                ]\n            ],\n";
         }
 
         return $behaviors;

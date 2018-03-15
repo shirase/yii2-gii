@@ -33,7 +33,7 @@ $controller->layout = 'common';
     <?= "<?php /* ?>\n" ?>
     <div class="box collapsed-box">
         <div class="box-header">
-            <div class="box-title" onclick="$.AdminLTE.boxWidget.collapse($(this).next().find('button'))" style="cursor: pointer">Поиск</div>
+            <div class="box-title" onclick="$.AdminLTE.boxWidget.collapse($(this).next().find('button'))" style="cursor: pointer">пїЅпїЅпїЅпїЅпїЅ</div>
             <div class="box-tools pull-right"><button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button></div>
         </div>
         <div class="box-body">
@@ -45,7 +45,6 @@ $controller->layout = 'common';
 
     <div class="box">
         <div class="box-body">
-            <h1><?= "<?= " ?>Html::encode($this->title) ?></h1>
 <?= $generator->enablePjax ? "            <?php Pjax::begin(); ?>\n" : '' ?>
             <p>
                 <?= "<?php " ?>if (\Yii::$app->user->can('/'.$this->context->uniqueId.'/create')) echo Html::a(<?= $generator->generateString('Create') ?>, ['create']+$this->context->actionParams, ['class' => 'btn btn-success', 'data-pjax'=>0]) ?>
